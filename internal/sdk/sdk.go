@@ -112,8 +112,8 @@ func New(opts ...SDKOption) *Hightouch {
 		sdkConfiguration: sdkConfiguration{
 			Language:          "terraform",
 			OpenAPIDocVersion: "1.0.0",
-			SDKVersion:        "1.3.0",
-			GenVersion:        "2.82.0",
+			SDKVersion:        "1.4.0",
+			GenVersion:        "2.83.3",
 		},
 	}
 	for _, opt := range opts {
