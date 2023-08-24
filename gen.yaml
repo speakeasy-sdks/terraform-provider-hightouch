@@ -2,8 +2,8 @@ configVersion: 1.0.0
 management:
   docChecksum: 6c15b6978da01d8767c381eb7fb088bd
   docVersion: 1.0.0
-  speakeasyVersion: 1.74.3
-  generationVersion: 2.86.6
+  speakeasyVersion: 1.74.9
+  generationVersion: 2.86.10
 generation:
   comments:
     disableComments: false
@@ -14,11 +14,11 @@ generation:
   tagNamespacingDisabled: false
 features:
   terraform:
-    core: 2.83.2
+    core: 2.83.3
     globalSecurity: 2.81.1
     globalServerURLs: 2.82.0
     methodSecurity: 2.81.1
 terraform:
-  version: 1.5.2
+  version: 1.5.3
   author: de-tf-providers
   packageName: hightouch
