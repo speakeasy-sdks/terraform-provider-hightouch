@@ -2,35 +2,26 @@
 
 package shared
 
-import (
-	"time"
+type InternalServerError string
+
+const (
+	InternalServerErrorInternalServerError InternalServerError = "Internal Server Error"
 )
 
-// Destination - The service receiving your data (e.g. Salesforce, Hubspot, Customer.io, or a
-// SFTP server)
-type Destination struct {
-	// The destination's configuration. This specifies general metadata about destination, like hostname and username.
-	// Hightouch will be using this configuration to connect to destination.
-	//
-	// The schema depends on the destination type.
-	//
-	// Consumers should NOT make assumptions on the contents of the
-	// configuration. It may change as Hightouch updates its internal code.
-	Configuration map[string]interface{} `json:"configuration"`
-	// The timestamp when the destination was created
-	CreatedAt time.Time `json:"createdAt"`
-	// The destination's id
-	ID string `json:"id"`
-	// The destination's name
-	Name string `json:"name"`
-	// The destination's slug
-	Slug string `json:"slug"`
-	// A list of syncs that sync to this destination.
-	Syncs []string `json:"syncs"`
-	// The destination's type (e.g. salesforce or hubspot).
-	Type string `json:"type"`
-	// The timestamp when the destination was last updated
-	UpdatedAt time.Time `json:"updatedAt"`
-	// The id of the workspace that the destination belongs to
-	WorkspaceID string `json:"workspaceId"`
+func (e InternalServerError) ToPointer() *InternalServerError {
+	return &e
+}
+
+func (e *InternalServerError) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "Internal Server Error":
+		*e = InternalServerError(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for InternalServerError: %v", v)
+	}
 }
