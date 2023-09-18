@@ -66,12 +66,12 @@ func CreateUpdateSource200ApplicationJSONInternalServerError(internalServerError
 func (u *UpdateSource200ApplicationJSON) UnmarshalJSON(data []byte) error {
 	var d *json.Decoder
 
-	source := new(shared.Source)
+	internalServerError := new(shared.InternalServerError)
 	d = json.NewDecoder(bytes.NewReader(data))
 	d.DisallowUnknownFields()
-	if err := d.Decode(&source); err == nil {
-		u.Source = source
-		u.Type = UpdateSource200ApplicationJSONTypeSource
+	if err := d.Decode(&internalServerError); err == nil {
+		u.InternalServerError = internalServerError
+		u.Type = UpdateSource200ApplicationJSONTypeInternalServerError
 		return nil
 	}
 
@@ -84,12 +84,12 @@ func (u *UpdateSource200ApplicationJSON) UnmarshalJSON(data []byte) error {
 		return nil
 	}
 
-	internalServerError := new(shared.InternalServerError)
+	source := new(shared.Source)
 	d = json.NewDecoder(bytes.NewReader(data))
 	d.DisallowUnknownFields()
-	if err := d.Decode(&internalServerError); err == nil {
-		u.InternalServerError = internalServerError
-		u.Type = UpdateSource200ApplicationJSONTypeInternalServerError
+	if err := d.Decode(&source); err == nil {
+		u.Source = source
+		u.Type = UpdateSource200ApplicationJSONTypeSource
 		return nil
 	}
 
@@ -97,16 +97,16 @@ func (u *UpdateSource200ApplicationJSON) UnmarshalJSON(data []byte) error {
 }
 
 func (u UpdateSource200ApplicationJSON) MarshalJSON() ([]byte, error) {
-	if u.Source != nil {
-		return json.Marshal(u.Source)
+	if u.InternalServerError != nil {
+		return json.Marshal(u.InternalServerError)
 	}
 
 	if u.ValidateErrorJSON != nil {
 		return json.Marshal(u.ValidateErrorJSON)
 	}
 
-	if u.InternalServerError != nil {
-		return json.Marshal(u.InternalServerError)
+	if u.Source != nil {
+		return json.Marshal(u.Source)
 	}
 
 	return nil, nil
