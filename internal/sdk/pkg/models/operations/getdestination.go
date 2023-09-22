@@ -7,10 +7,6 @@ import (
 	"net/http"
 )
 
-type GetDestinationSecurity struct {
-	BearerAuth string `security:"scheme,type=http,subtype=bearer,name=Authorization"`
-}
-
 type GetDestinationRequest struct {
 	// The destination's ID
 	DestinationID float64 `pathParam:"style=simple,explode=false,name=destinationId"`

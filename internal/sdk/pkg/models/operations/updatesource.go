@@ -10,10 +10,6 @@ import (
 	"net/http"
 )
 
-type UpdateSourceSecurity struct {
-	BearerAuth string `security:"scheme,type=http,subtype=bearer,name=Authorization"`
-}
-
 type UpdateSourceRequest struct {
 	SourceUpdate shared.SourceUpdate `request:"mediaType=application/json"`
 	// The source's ID
@@ -66,12 +62,12 @@ func CreateUpdateSource200ApplicationJSONInternalServerError(internalServerError
 func (u *UpdateSource200ApplicationJSON) UnmarshalJSON(data []byte) error {
 	var d *json.Decoder
 
-	source := new(shared.Source)
+	internalServerError := new(shared.InternalServerError)
 	d = json.NewDecoder(bytes.NewReader(data))
 	d.DisallowUnknownFields()
-	if err := d.Decode(&source); err == nil {
-		u.Source = source
-		u.Type = UpdateSource200ApplicationJSONTypeSource
+	if err := d.Decode(&internalServerError); err == nil {
+		u.InternalServerError = internalServerError
+		u.Type = UpdateSource200ApplicationJSONTypeInternalServerError
 		return nil
 	}
 
@@ -84,12 +80,12 @@ func (u *UpdateSource200ApplicationJSON) UnmarshalJSON(data []byte) error {
 		return nil
 	}
 
-	internalServerError := new(shared.InternalServerError)
+	source := new(shared.Source)
 	d = json.NewDecoder(bytes.NewReader(data))
 	d.DisallowUnknownFields()
-	if err := d.Decode(&internalServerError); err == nil {
-		u.InternalServerError = internalServerError
-		u.Type = UpdateSource200ApplicationJSONTypeInternalServerError
+	if err := d.Decode(&source); err == nil {
+		u.Source = source
+		u.Type = UpdateSource200ApplicationJSONTypeSource
 		return nil
 	}
 
@@ -97,16 +93,16 @@ func (u *UpdateSource200ApplicationJSON) UnmarshalJSON(data []byte) error {
 }
 
 func (u UpdateSource200ApplicationJSON) MarshalJSON() ([]byte, error) {
-	if u.Source != nil {
-		return json.Marshal(u.Source)
+	if u.InternalServerError != nil {
+		return json.Marshal(u.InternalServerError)
 	}
 
 	if u.ValidateErrorJSON != nil {
 		return json.Marshal(u.ValidateErrorJSON)
 	}
 
-	if u.InternalServerError != nil {
-		return json.Marshal(u.InternalServerError)
+	if u.Source != nil {
+		return json.Marshal(u.Source)
 	}
 
 	return nil, nil
@@ -119,7 +115,7 @@ type UpdateSourceResponse struct {
 	StatusCode          int
 	RawResponse         *http.Response
 	// Ok
-	UpdateSource200ApplicationJSONAnyOf *UpdateSource200ApplicationJSON
+	UpdateSource200ApplicationJSONOneOf *UpdateSource200ApplicationJSON
 	// Validation Failed
 	ValidateErrorJSON *shared.ValidateErrorJSON
 }

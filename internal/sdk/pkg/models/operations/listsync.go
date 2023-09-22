@@ -10,10 +10,6 @@ import (
 	"time"
 )
 
-type ListSyncSecurity struct {
-	BearerAuth string `security:"scheme,type=http,subtype=bearer,name=Authorization"`
-}
-
 // ListSyncOrderBy - specify the order
 type ListSyncOrderBy string
 
