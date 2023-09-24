@@ -9,10 +9,6 @@ import (
 	"net/http"
 )
 
-type ListDestinationSecurity struct {
-	BearerAuth string `security:"scheme,type=http,subtype=bearer,name=Authorization"`
-}
-
 // ListDestinationOrderBy - Order the returned destinations
 type ListDestinationOrderBy string
 

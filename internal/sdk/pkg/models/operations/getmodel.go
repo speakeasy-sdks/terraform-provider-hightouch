@@ -7,10 +7,6 @@ import (
 	"net/http"
 )
 
-type GetModelSecurity struct {
-	BearerAuth string `security:"scheme,type=http,subtype=bearer,name=Authorization"`
-}
-
 type GetModelRequest struct {
 	// The id of the model
 	ModelID float64 `pathParam:"style=simple,explode=false,name=modelId"`

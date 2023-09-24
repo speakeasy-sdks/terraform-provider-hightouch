@@ -10,10 +10,6 @@ import (
 	"net/http"
 )
 
-type UpdateModelSecurity struct {
-	BearerAuth string `security:"scheme,type=http,subtype=bearer,name=Authorization"`
-}
-
 type UpdateModelRequest struct {
 	ModelUpdate shared.ModelUpdate `request:"mediaType=application/json"`
 	// The model's ID
@@ -66,12 +62,12 @@ func CreateUpdateModel200ApplicationJSONInternalServerError(internalServerError 
 func (u *UpdateModel200ApplicationJSON) UnmarshalJSON(data []byte) error {
 	var d *json.Decoder
 
-	model := new(shared.Model)
+	internalServerError := new(shared.InternalServerError)
 	d = json.NewDecoder(bytes.NewReader(data))
 	d.DisallowUnknownFields()
-	if err := d.Decode(&model); err == nil {
-		u.Model = model
-		u.Type = UpdateModel200ApplicationJSONTypeModel
+	if err := d.Decode(&internalServerError); err == nil {
+		u.InternalServerError = internalServerError
+		u.Type = UpdateModel200ApplicationJSONTypeInternalServerError
 		return nil
 	}
 
@@ -84,12 +80,12 @@ func (u *UpdateModel200ApplicationJSON) UnmarshalJSON(data []byte) error {
 		return nil
 	}
 
-	internalServerError := new(shared.InternalServerError)
+	model := new(shared.Model)
 	d = json.NewDecoder(bytes.NewReader(data))
 	d.DisallowUnknownFields()
-	if err := d.Decode(&internalServerError); err == nil {
-		u.InternalServerError = internalServerError
-		u.Type = UpdateModel200ApplicationJSONTypeInternalServerError
+	if err := d.Decode(&model); err == nil {
+		u.Model = model
+		u.Type = UpdateModel200ApplicationJSONTypeModel
 		return nil
 	}
 
@@ -97,16 +93,16 @@ func (u *UpdateModel200ApplicationJSON) UnmarshalJSON(data []byte) error {
 }
 
 func (u UpdateModel200ApplicationJSON) MarshalJSON() ([]byte, error) {
-	if u.Model != nil {
-		return json.Marshal(u.Model)
+	if u.InternalServerError != nil {
+		return json.Marshal(u.InternalServerError)
 	}
 
 	if u.ValidateErrorJSON != nil {
 		return json.Marshal(u.ValidateErrorJSON)
 	}
 
-	if u.InternalServerError != nil {
-		return json.Marshal(u.InternalServerError)
+	if u.Model != nil {
+		return json.Marshal(u.Model)
 	}
 
 	return nil, nil
@@ -119,7 +115,7 @@ type UpdateModelResponse struct {
 	StatusCode          int
 	RawResponse         *http.Response
 	// Ok
-	UpdateModel200ApplicationJSONAnyOf *UpdateModel200ApplicationJSON
+	UpdateModel200ApplicationJSONOneOf *UpdateModel200ApplicationJSON
 	// Validation Failed
 	ValidateErrorJSON *shared.ValidateErrorJSON
 }

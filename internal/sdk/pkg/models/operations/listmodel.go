@@ -9,10 +9,6 @@ import (
 	"net/http"
 )
 
-type ListModelSecurity struct {
-	BearerAuth string `security:"scheme,type=http,subtype=bearer,name=Authorization"`
-}
-
 // ListModelOrderBy - specify the order
 type ListModelOrderBy string
 
