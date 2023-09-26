@@ -10,10 +10,6 @@ import (
 	"net/http"
 )
 
-type CreateSyncSecurity struct {
-	BearerAuth string `security:"scheme,type=http,subtype=bearer,name=Authorization"`
-}
-
 type CreateSync200ApplicationJSONType string
 
 const (
@@ -60,12 +56,12 @@ func CreateCreateSync200ApplicationJSONInternalServerError(internalServerError s
 func (u *CreateSync200ApplicationJSON) UnmarshalJSON(data []byte) error {
 	var d *json.Decoder
 
-	sync := new(shared.Sync)
+	internalServerError := new(shared.InternalServerError)
 	d = json.NewDecoder(bytes.NewReader(data))
 	d.DisallowUnknownFields()
-	if err := d.Decode(&sync); err == nil {
-		u.Sync = sync
-		u.Type = CreateSync200ApplicationJSONTypeSync
+	if err := d.Decode(&internalServerError); err == nil {
+		u.InternalServerError = internalServerError
+		u.Type = CreateSync200ApplicationJSONTypeInternalServerError
 		return nil
 	}
 
@@ -78,12 +74,12 @@ func (u *CreateSync200ApplicationJSON) UnmarshalJSON(data []byte) error {
 		return nil
 	}
 
-	internalServerError := new(shared.InternalServerError)
+	sync := new(shared.Sync)
 	d = json.NewDecoder(bytes.NewReader(data))
 	d.DisallowUnknownFields()
-	if err := d.Decode(&internalServerError); err == nil {
-		u.InternalServerError = internalServerError
-		u.Type = CreateSync200ApplicationJSONTypeInternalServerError
+	if err := d.Decode(&sync); err == nil {
+		u.Sync = sync
+		u.Type = CreateSync200ApplicationJSONTypeSync
 		return nil
 	}
 
@@ -91,29 +87,32 @@ func (u *CreateSync200ApplicationJSON) UnmarshalJSON(data []byte) error {
 }
 
 func (u CreateSync200ApplicationJSON) MarshalJSON() ([]byte, error) {
-	if u.Sync != nil {
-		return json.Marshal(u.Sync)
+	if u.InternalServerError != nil {
+		return json.Marshal(u.InternalServerError)
 	}
 
 	if u.ValidateErrorJSON != nil {
 		return json.Marshal(u.ValidateErrorJSON)
 	}
 
-	if u.InternalServerError != nil {
-		return json.Marshal(u.InternalServerError)
+	if u.Sync != nil {
+		return json.Marshal(u.Sync)
 	}
 
 	return nil, nil
 }
 
 type CreateSyncResponse struct {
+	// HTTP response content type for this operation
 	ContentType string
 	// Ok
-	CreateSync200ApplicationJSONAnyOf *CreateSync200ApplicationJSON
+	CreateSync200ApplicationJSONOneOf *CreateSync200ApplicationJSON
 	// Something went wrong
 	InternalServerError *shared.InternalServerError
-	StatusCode          int
-	RawResponse         *http.Response
+	// HTTP response status code for this operation
+	StatusCode int
+	// Raw HTTP response; suitable for custom response parsing
+	RawResponse *http.Response
 	// Conflict
 	ValidateErrorJSON *shared.ValidateErrorJSON
 }

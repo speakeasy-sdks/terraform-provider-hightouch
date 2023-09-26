@@ -7,19 +7,18 @@ import (
 	"net/http"
 )
 
-type GetDestinationSecurity struct {
-	BearerAuth string `security:"scheme,type=http,subtype=bearer,name=Authorization"`
-}
-
 type GetDestinationRequest struct {
 	// The destination's ID
 	DestinationID float64 `pathParam:"style=simple,explode=false,name=destinationId"`
 }
 
 type GetDestinationResponse struct {
+	// HTTP response content type for this operation
 	ContentType string
 	// Ok
 	Destination *shared.Destination
-	StatusCode  int
+	// HTTP response status code for this operation
+	StatusCode int
+	// Raw HTTP response; suitable for custom response parsing
 	RawResponse *http.Response
 }

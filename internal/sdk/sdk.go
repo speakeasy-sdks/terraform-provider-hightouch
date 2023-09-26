@@ -44,9 +44,9 @@ func Float32(f float32) *float32 { return &f }
 func Float64(f float64) *float64 { return &f }
 
 type sdkConfiguration struct {
-	DefaultClient  HTTPClient
-	SecurityClient HTTPClient
-
+	DefaultClient     HTTPClient
+	SecurityClient    HTTPClient
+	Security          *shared.Security
 	ServerURL         string
 	ServerIndex       int
 	Language          string
@@ -106,14 +106,21 @@ func WithClient(client HTTPClient) SDKOption {
 	}
 }
 
+// WithSecurity configures the SDK to use the provided security details
+func WithSecurity(security shared.Security) SDKOption {
+	return func(sdk *Hightouch) {
+		sdk.sdkConfiguration.Security = &security
+	}
+}
+
 // New creates a new instance of the SDK with the provided options
 func New(opts ...SDKOption) *Hightouch {
 	sdk := &Hightouch{
 		sdkConfiguration: sdkConfiguration{
 			Language:          "terraform",
 			OpenAPIDocVersion: "1.0.0",
-			SDKVersion:        "1.8.2",
-			GenVersion:        "2.96.3",
+			SDKVersion:        "1.9.0",
+			GenVersion:        "2.129.1",
 		},
 	}
 	for _, opt := range opts {
@@ -125,7 +132,11 @@ func New(opts ...SDKOption) *Hightouch {
 		sdk.sdkConfiguration.DefaultClient = &http.Client{Timeout: 60 * time.Second}
 	}
 	if sdk.sdkConfiguration.SecurityClient == nil {
-		sdk.sdkConfiguration.SecurityClient = sdk.sdkConfiguration.DefaultClient
+		if sdk.sdkConfiguration.Security != nil {
+			sdk.sdkConfiguration.SecurityClient = utils.ConfigureSecurityClient(sdk.sdkConfiguration.DefaultClient, sdk.sdkConfiguration.Security)
+		} else {
+			sdk.sdkConfiguration.SecurityClient = sdk.sdkConfiguration.DefaultClient
+		}
 	}
 
 	return sdk
@@ -133,7 +144,7 @@ func New(opts ...SDKOption) *Hightouch {
 
 // CreateDestination - Create Destination
 // Create a new destination
-func (s *Hightouch) CreateDestination(ctx context.Context, request shared.DestinationCreate, security operations.CreateDestinationSecurity) (*operations.CreateDestinationResponse, error) {
+func (s *Hightouch) CreateDestination(ctx context.Context, request shared.DestinationCreate) (*operations.CreateDestinationResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
 	url := strings.TrimSuffix(baseURL, "/") + "/destinations"
 
@@ -157,7 +168,7 @@ func (s *Hightouch) CreateDestination(ctx context.Context, request shared.Destin
 
 	req.Header.Set("Content-Type", reqContentType)
 
-	client := utils.ConfigureSecurityClient(s.sdkConfiguration.DefaultClient, security)
+	client := s.sdkConfiguration.SecurityClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -191,7 +202,7 @@ func (s *Hightouch) CreateDestination(ctx context.Context, request shared.Destin
 				return res, err
 			}
 
-			res.CreateDestination200ApplicationJSONAnyOf = out
+			res.CreateDestination200ApplicationJSONOneOf = out
 		}
 	case httpRes.StatusCode == 401:
 	case httpRes.StatusCode == 409:
@@ -223,7 +234,7 @@ func (s *Hightouch) CreateDestination(ctx context.Context, request shared.Destin
 
 // CreateModel - Create Model
 // Create a new model
-func (s *Hightouch) CreateModel(ctx context.Context, request shared.ModelCreate, security operations.CreateModelSecurity) (*operations.CreateModelResponse, error) {
+func (s *Hightouch) CreateModel(ctx context.Context, request shared.ModelCreate) (*operations.CreateModelResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
 	url := strings.TrimSuffix(baseURL, "/") + "/models"
 
@@ -247,7 +258,7 @@ func (s *Hightouch) CreateModel(ctx context.Context, request shared.ModelCreate,
 
 	req.Header.Set("Content-Type", reqContentType)
 
-	client := utils.ConfigureSecurityClient(s.sdkConfiguration.DefaultClient, security)
+	client := s.sdkConfiguration.SecurityClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -281,7 +292,7 @@ func (s *Hightouch) CreateModel(ctx context.Context, request shared.ModelCreate,
 				return res, err
 			}
 
-			res.CreateModel200ApplicationJSONAnyOf = out
+			res.CreateModel200ApplicationJSONOneOf = out
 		}
 	case httpRes.StatusCode == 401:
 	case httpRes.StatusCode == 409:
@@ -313,7 +324,7 @@ func (s *Hightouch) CreateModel(ctx context.Context, request shared.ModelCreate,
 
 // CreateSource - Create Source
 // Create a new source
-func (s *Hightouch) CreateSource(ctx context.Context, request shared.SourceCreate, security operations.CreateSourceSecurity) (*operations.CreateSourceResponse, error) {
+func (s *Hightouch) CreateSource(ctx context.Context, request shared.SourceCreate) (*operations.CreateSourceResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
 	url := strings.TrimSuffix(baseURL, "/") + "/sources"
 
@@ -337,7 +348,7 @@ func (s *Hightouch) CreateSource(ctx context.Context, request shared.SourceCreat
 
 	req.Header.Set("Content-Type", reqContentType)
 
-	client := utils.ConfigureSecurityClient(s.sdkConfiguration.DefaultClient, security)
+	client := s.sdkConfiguration.SecurityClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -371,7 +382,7 @@ func (s *Hightouch) CreateSource(ctx context.Context, request shared.SourceCreat
 				return res, err
 			}
 
-			res.CreateSource200ApplicationJSONAnyOf = out
+			res.CreateSource200ApplicationJSONOneOf = out
 		}
 	case httpRes.StatusCode == 401:
 	case httpRes.StatusCode == 409:
@@ -403,7 +414,7 @@ func (s *Hightouch) CreateSource(ctx context.Context, request shared.SourceCreat
 
 // CreateSync - Create Sync
 // Create a new sync
-func (s *Hightouch) CreateSync(ctx context.Context, request shared.SyncCreate, security operations.CreateSyncSecurity) (*operations.CreateSyncResponse, error) {
+func (s *Hightouch) CreateSync(ctx context.Context, request shared.SyncCreate) (*operations.CreateSyncResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
 	url := strings.TrimSuffix(baseURL, "/") + "/syncs"
 
@@ -427,7 +438,7 @@ func (s *Hightouch) CreateSync(ctx context.Context, request shared.SyncCreate, s
 
 	req.Header.Set("Content-Type", reqContentType)
 
-	client := utils.ConfigureSecurityClient(s.sdkConfiguration.DefaultClient, security)
+	client := s.sdkConfiguration.SecurityClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -461,7 +472,7 @@ func (s *Hightouch) CreateSync(ctx context.Context, request shared.SyncCreate, s
 				return res, err
 			}
 
-			res.CreateSync200ApplicationJSONAnyOf = out
+			res.CreateSync200ApplicationJSONOneOf = out
 		}
 	case httpRes.StatusCode == 401:
 	case httpRes.StatusCode == 409:
@@ -493,7 +504,7 @@ func (s *Hightouch) CreateSync(ctx context.Context, request shared.SyncCreate, s
 
 // GetDestination - Get Destination
 // Retrieve a destination based on its Hightouch ID
-func (s *Hightouch) GetDestination(ctx context.Context, request operations.GetDestinationRequest, security operations.GetDestinationSecurity) (*operations.GetDestinationResponse, error) {
+func (s *Hightouch) GetDestination(ctx context.Context, request operations.GetDestinationRequest) (*operations.GetDestinationResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
 	url, err := utils.GenerateURL(ctx, baseURL, "/destinations/{destinationId}", request, nil)
 	if err != nil {
@@ -507,7 +518,7 @@ func (s *Hightouch) GetDestination(ctx context.Context, request operations.GetDe
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("user-agent", fmt.Sprintf("speakeasy-sdk/%s %s %s %s", s.sdkConfiguration.Language, s.sdkConfiguration.SDKVersion, s.sdkConfiguration.GenVersion, s.sdkConfiguration.OpenAPIDocVersion))
 
-	client := utils.ConfigureSecurityClient(s.sdkConfiguration.DefaultClient, security)
+	client := s.sdkConfiguration.SecurityClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -552,7 +563,7 @@ func (s *Hightouch) GetDestination(ctx context.Context, request operations.GetDe
 
 // GetModel - Get Model
 // Retrieve models from model ID
-func (s *Hightouch) GetModel(ctx context.Context, request operations.GetModelRequest, security operations.GetModelSecurity) (*operations.GetModelResponse, error) {
+func (s *Hightouch) GetModel(ctx context.Context, request operations.GetModelRequest) (*operations.GetModelResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
 	url, err := utils.GenerateURL(ctx, baseURL, "/models/{modelId}", request, nil)
 	if err != nil {
@@ -566,7 +577,7 @@ func (s *Hightouch) GetModel(ctx context.Context, request operations.GetModelReq
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("user-agent", fmt.Sprintf("speakeasy-sdk/%s %s %s %s", s.sdkConfiguration.Language, s.sdkConfiguration.SDKVersion, s.sdkConfiguration.GenVersion, s.sdkConfiguration.OpenAPIDocVersion))
 
-	client := utils.ConfigureSecurityClient(s.sdkConfiguration.DefaultClient, security)
+	client := s.sdkConfiguration.SecurityClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -611,7 +622,7 @@ func (s *Hightouch) GetModel(ctx context.Context, request operations.GetModelReq
 
 // GetSource - Get Source
 // Retrieve source from source ID
-func (s *Hightouch) GetSource(ctx context.Context, request operations.GetSourceRequest, security operations.GetSourceSecurity) (*operations.GetSourceResponse, error) {
+func (s *Hightouch) GetSource(ctx context.Context, request operations.GetSourceRequest) (*operations.GetSourceResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
 	url, err := utils.GenerateURL(ctx, baseURL, "/sources/{sourceId}", request, nil)
 	if err != nil {
@@ -625,7 +636,7 @@ func (s *Hightouch) GetSource(ctx context.Context, request operations.GetSourceR
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("user-agent", fmt.Sprintf("speakeasy-sdk/%s %s %s %s", s.sdkConfiguration.Language, s.sdkConfiguration.SDKVersion, s.sdkConfiguration.GenVersion, s.sdkConfiguration.OpenAPIDocVersion))
 
-	client := utils.ConfigureSecurityClient(s.sdkConfiguration.DefaultClient, security)
+	client := s.sdkConfiguration.SecurityClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -680,7 +691,7 @@ func (s *Hightouch) GetSource(ctx context.Context, request operations.GetSourceR
 
 // GetSync - Get Sync
 // Retrieve sync from sync ID
-func (s *Hightouch) GetSync(ctx context.Context, request operations.GetSyncRequest, security operations.GetSyncSecurity) (*operations.GetSyncResponse, error) {
+func (s *Hightouch) GetSync(ctx context.Context, request operations.GetSyncRequest) (*operations.GetSyncResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
 	url, err := utils.GenerateURL(ctx, baseURL, "/syncs/{syncId}", request, nil)
 	if err != nil {
@@ -694,7 +705,7 @@ func (s *Hightouch) GetSync(ctx context.Context, request operations.GetSyncReque
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("user-agent", fmt.Sprintf("speakeasy-sdk/%s %s %s %s", s.sdkConfiguration.Language, s.sdkConfiguration.SDKVersion, s.sdkConfiguration.GenVersion, s.sdkConfiguration.OpenAPIDocVersion))
 
-	client := utils.ConfigureSecurityClient(s.sdkConfiguration.DefaultClient, security)
+	client := s.sdkConfiguration.SecurityClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -739,7 +750,7 @@ func (s *Hightouch) GetSync(ctx context.Context, request operations.GetSyncReque
 
 // ListDestination - List Destinations
 // List the destinations in the user's workspace
-func (s *Hightouch) ListDestination(ctx context.Context, request operations.ListDestinationRequest, security operations.ListDestinationSecurity) (*operations.ListDestinationResponse, error) {
+func (s *Hightouch) ListDestination(ctx context.Context, request operations.ListDestinationRequest) (*operations.ListDestinationResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
 	url := strings.TrimSuffix(baseURL, "/") + "/destinations"
 
@@ -754,7 +765,7 @@ func (s *Hightouch) ListDestination(ctx context.Context, request operations.List
 		return nil, fmt.Errorf("error populating query params: %w", err)
 	}
 
-	client := utils.ConfigureSecurityClient(s.sdkConfiguration.DefaultClient, security)
+	client := s.sdkConfiguration.SecurityClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -809,7 +820,7 @@ func (s *Hightouch) ListDestination(ctx context.Context, request operations.List
 
 // ListModel - List Models
 // List all the models in the current workspace including parent and related models
-func (s *Hightouch) ListModel(ctx context.Context, request operations.ListModelRequest, security operations.ListModelSecurity) (*operations.ListModelResponse, error) {
+func (s *Hightouch) ListModel(ctx context.Context, request operations.ListModelRequest) (*operations.ListModelResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
 	url := strings.TrimSuffix(baseURL, "/") + "/models"
 
@@ -824,7 +835,7 @@ func (s *Hightouch) ListModel(ctx context.Context, request operations.ListModelR
 		return nil, fmt.Errorf("error populating query params: %w", err)
 	}
 
-	client := utils.ConfigureSecurityClient(s.sdkConfiguration.DefaultClient, security)
+	client := s.sdkConfiguration.SecurityClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -879,7 +890,7 @@ func (s *Hightouch) ListModel(ctx context.Context, request operations.ListModelR
 
 // ListSource - List Sources
 // List all the sources in the current workspace
-func (s *Hightouch) ListSource(ctx context.Context, request operations.ListSourceRequest, security operations.ListSourceSecurity) (*operations.ListSourceResponse, error) {
+func (s *Hightouch) ListSource(ctx context.Context, request operations.ListSourceRequest) (*operations.ListSourceResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
 	url := strings.TrimSuffix(baseURL, "/") + "/sources"
 
@@ -894,7 +905,7 @@ func (s *Hightouch) ListSource(ctx context.Context, request operations.ListSourc
 		return nil, fmt.Errorf("error populating query params: %w", err)
 	}
 
-	client := utils.ConfigureSecurityClient(s.sdkConfiguration.DefaultClient, security)
+	client := s.sdkConfiguration.SecurityClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -939,7 +950,7 @@ func (s *Hightouch) ListSource(ctx context.Context, request operations.ListSourc
 
 // ListSync - List Syncs
 // List all the syncs in the current workspace
-func (s *Hightouch) ListSync(ctx context.Context, request operations.ListSyncRequest, security operations.ListSyncSecurity) (*operations.ListSyncResponse, error) {
+func (s *Hightouch) ListSync(ctx context.Context, request operations.ListSyncRequest) (*operations.ListSyncResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
 	url := strings.TrimSuffix(baseURL, "/") + "/syncs"
 
@@ -954,7 +965,7 @@ func (s *Hightouch) ListSync(ctx context.Context, request operations.ListSyncReq
 		return nil, fmt.Errorf("error populating query params: %w", err)
 	}
 
-	client := utils.ConfigureSecurityClient(s.sdkConfiguration.DefaultClient, security)
+	client := s.sdkConfiguration.SecurityClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -1009,7 +1020,7 @@ func (s *Hightouch) ListSync(ctx context.Context, request operations.ListSyncReq
 
 // ListSyncRuns - List Sync Runs
 // List all sync runs under a sync
-func (s *Hightouch) ListSyncRuns(ctx context.Context, request operations.ListSyncRunsRequest, security operations.ListSyncRunsSecurity) (*operations.ListSyncRunsResponse, error) {
+func (s *Hightouch) ListSyncRuns(ctx context.Context, request operations.ListSyncRunsRequest) (*operations.ListSyncRunsResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
 	url, err := utils.GenerateURL(ctx, baseURL, "/syncs/{syncId}/runs", request, nil)
 	if err != nil {
@@ -1027,7 +1038,7 @@ func (s *Hightouch) ListSyncRuns(ctx context.Context, request operations.ListSyn
 		return nil, fmt.Errorf("error populating query params: %w", err)
 	}
 
-	client := utils.ConfigureSecurityClient(s.sdkConfiguration.DefaultClient, security)
+	client := s.sdkConfiguration.SecurityClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -1085,7 +1096,7 @@ func (s *Hightouch) ListSyncRuns(ctx context.Context, request operations.ListSyn
 //
 // If a run is already in progress, this queues a sync run that will get
 // executed immediately after the current run completes.
-func (s *Hightouch) TriggerRun(ctx context.Context, request operations.TriggerRunRequest, security operations.TriggerRunSecurity) (*operations.TriggerRunResponse, error) {
+func (s *Hightouch) TriggerRun(ctx context.Context, request operations.TriggerRunRequest) (*operations.TriggerRunResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
 	url, err := utils.GenerateURL(ctx, baseURL, "/syncs/{syncId}/trigger", request, nil)
 	if err != nil {
@@ -1109,7 +1120,7 @@ func (s *Hightouch) TriggerRun(ctx context.Context, request operations.TriggerRu
 
 	req.Header.Set("Content-Type", reqContentType)
 
-	client := utils.ConfigureSecurityClient(s.sdkConfiguration.DefaultClient, security)
+	client := s.sdkConfiguration.SecurityClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -1168,7 +1179,7 @@ func (s *Hightouch) TriggerRun(ctx context.Context, request operations.TriggerRu
 //
 // If a run is already in progress, this queues a sync run that will get
 // executed immediately after the current run completes.
-func (s *Hightouch) TriggerRunCustom(ctx context.Context, request shared.TriggerRunCustomInput, security operations.TriggerRunCustomSecurity) (*operations.TriggerRunCustomResponse, error) {
+func (s *Hightouch) TriggerRunCustom(ctx context.Context, request shared.TriggerRunCustomInput) (*operations.TriggerRunCustomResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
 	url := strings.TrimSuffix(baseURL, "/") + "/syncs/trigger"
 
@@ -1192,7 +1203,7 @@ func (s *Hightouch) TriggerRunCustom(ctx context.Context, request shared.Trigger
 
 	req.Header.Set("Content-Type", reqContentType)
 
-	client := utils.ConfigureSecurityClient(s.sdkConfiguration.DefaultClient, security)
+	client := s.sdkConfiguration.SecurityClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -1226,7 +1237,7 @@ func (s *Hightouch) TriggerRunCustom(ctx context.Context, request shared.Trigger
 				return res, err
 			}
 
-			res.TriggerRunCustom200ApplicationJSONAnyOf = out
+			res.TriggerRunCustom200ApplicationJSONOneOf = out
 		}
 	case httpRes.StatusCode == 400:
 		fallthrough
@@ -1246,7 +1257,7 @@ func (s *Hightouch) TriggerRunCustom(ctx context.Context, request shared.Trigger
 	return res, nil
 }
 
-func (s *Hightouch) TriggerRunIDGraph(ctx context.Context, request operations.TriggerRunIDGraphRequest, security operations.TriggerRunIDGraphSecurity) (*operations.TriggerRunIDGraphResponse, error) {
+func (s *Hightouch) TriggerRunIDGraph(ctx context.Context, request operations.TriggerRunIDGraphRequest) (*operations.TriggerRunIDGraphResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
 	url, err := utils.GenerateURL(ctx, baseURL, "/id_graphs/{graphId}/trigger", request, nil)
 	if err != nil {
@@ -1270,7 +1281,7 @@ func (s *Hightouch) TriggerRunIDGraph(ctx context.Context, request operations.Tr
 
 	req.Header.Set("Content-Type", reqContentType)
 
-	client := utils.ConfigureSecurityClient(s.sdkConfiguration.DefaultClient, security)
+	client := s.sdkConfiguration.SecurityClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -1328,7 +1339,7 @@ func (s *Hightouch) TriggerRunIDGraph(ctx context.Context, request operations.Tr
 // Update an existing destination
 //
 // Patch a destination based on its Hightouch ID
-func (s *Hightouch) UpdateDestination(ctx context.Context, request operations.UpdateDestinationRequest, security operations.UpdateDestinationSecurity) (*operations.UpdateDestinationResponse, error) {
+func (s *Hightouch) UpdateDestination(ctx context.Context, request operations.UpdateDestinationRequest) (*operations.UpdateDestinationResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
 	url, err := utils.GenerateURL(ctx, baseURL, "/destinations/{destinationId}", request, nil)
 	if err != nil {
@@ -1355,7 +1366,7 @@ func (s *Hightouch) UpdateDestination(ctx context.Context, request operations.Up
 
 	req.Header.Set("Content-Type", reqContentType)
 
-	client := utils.ConfigureSecurityClient(s.sdkConfiguration.DefaultClient, security)
+	client := s.sdkConfiguration.SecurityClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -1389,7 +1400,7 @@ func (s *Hightouch) UpdateDestination(ctx context.Context, request operations.Up
 				return res, err
 			}
 
-			res.UpdateDestination200ApplicationJSONAnyOf = out
+			res.UpdateDestination200ApplicationJSONOneOf = out
 		}
 	case httpRes.StatusCode == 401:
 		fallthrough
@@ -1423,7 +1434,7 @@ func (s *Hightouch) UpdateDestination(ctx context.Context, request operations.Up
 // Update an existing model
 //
 // Patch a model based on its Hightouch ID
-func (s *Hightouch) UpdateModel(ctx context.Context, request operations.UpdateModelRequest, security operations.UpdateModelSecurity) (*operations.UpdateModelResponse, error) {
+func (s *Hightouch) UpdateModel(ctx context.Context, request operations.UpdateModelRequest) (*operations.UpdateModelResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
 	url, err := utils.GenerateURL(ctx, baseURL, "/models/{modelId}", request, nil)
 	if err != nil {
@@ -1450,7 +1461,7 @@ func (s *Hightouch) UpdateModel(ctx context.Context, request operations.UpdateMo
 
 	req.Header.Set("Content-Type", reqContentType)
 
-	client := utils.ConfigureSecurityClient(s.sdkConfiguration.DefaultClient, security)
+	client := s.sdkConfiguration.SecurityClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -1484,7 +1495,7 @@ func (s *Hightouch) UpdateModel(ctx context.Context, request operations.UpdateMo
 				return res, err
 			}
 
-			res.UpdateModel200ApplicationJSONAnyOf = out
+			res.UpdateModel200ApplicationJSONOneOf = out
 		}
 	case httpRes.StatusCode == 401:
 		fallthrough
@@ -1518,7 +1529,7 @@ func (s *Hightouch) UpdateModel(ctx context.Context, request operations.UpdateMo
 // Update an existing source
 //
 // Patch a source based on its Hightouch ID
-func (s *Hightouch) UpdateSource(ctx context.Context, request operations.UpdateSourceRequest, security operations.UpdateSourceSecurity) (*operations.UpdateSourceResponse, error) {
+func (s *Hightouch) UpdateSource(ctx context.Context, request operations.UpdateSourceRequest) (*operations.UpdateSourceResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
 	url, err := utils.GenerateURL(ctx, baseURL, "/sources/{sourceId}", request, nil)
 	if err != nil {
@@ -1545,7 +1556,7 @@ func (s *Hightouch) UpdateSource(ctx context.Context, request operations.UpdateS
 
 	req.Header.Set("Content-Type", reqContentType)
 
-	client := utils.ConfigureSecurityClient(s.sdkConfiguration.DefaultClient, security)
+	client := s.sdkConfiguration.SecurityClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -1579,7 +1590,7 @@ func (s *Hightouch) UpdateSource(ctx context.Context, request operations.UpdateS
 				return res, err
 			}
 
-			res.UpdateSource200ApplicationJSONAnyOf = out
+			res.UpdateSource200ApplicationJSONOneOf = out
 		}
 	case httpRes.StatusCode == 401:
 		fallthrough
@@ -1613,7 +1624,7 @@ func (s *Hightouch) UpdateSource(ctx context.Context, request operations.UpdateS
 // Update an existing sync
 //
 // Patch a sync based on its Hightouch ID
-func (s *Hightouch) UpdateSync(ctx context.Context, request operations.UpdateSyncRequest, security operations.UpdateSyncSecurity) (*operations.UpdateSyncResponse, error) {
+func (s *Hightouch) UpdateSync(ctx context.Context, request operations.UpdateSyncRequest) (*operations.UpdateSyncResponse, error) {
 	baseURL := utils.ReplaceParameters(s.sdkConfiguration.GetServerDetails())
 	url, err := utils.GenerateURL(ctx, baseURL, "/syncs/{syncId}", request, nil)
 	if err != nil {
@@ -1640,7 +1651,7 @@ func (s *Hightouch) UpdateSync(ctx context.Context, request operations.UpdateSyn
 
 	req.Header.Set("Content-Type", reqContentType)
 
-	client := utils.ConfigureSecurityClient(s.sdkConfiguration.DefaultClient, security)
+	client := s.sdkConfiguration.SecurityClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -1674,7 +1685,7 @@ func (s *Hightouch) UpdateSync(ctx context.Context, request operations.UpdateSyn
 				return res, err
 			}
 
-			res.UpdateSync200ApplicationJSONAnyOf = out
+			res.UpdateSync200ApplicationJSONOneOf = out
 		}
 	case httpRes.StatusCode == 401:
 		fallthrough
