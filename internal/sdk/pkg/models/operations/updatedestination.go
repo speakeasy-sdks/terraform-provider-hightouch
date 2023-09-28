@@ -10,10 +10,6 @@ import (
 	"net/http"
 )
 
-type UpdateDestinationSecurity struct {
-	BearerAuth string `security:"scheme,type=http,subtype=bearer,name=Authorization"`
-}
-
 type UpdateDestinationRequest struct {
 	DestinationUpdate shared.DestinationUpdate `request:"mediaType=application/json"`
 	// The destination's ID
@@ -66,12 +62,12 @@ func CreateUpdateDestination200ApplicationJSONInternalServerError(internalServer
 func (u *UpdateDestination200ApplicationJSON) UnmarshalJSON(data []byte) error {
 	var d *json.Decoder
 
-	destination := new(shared.Destination)
+	internalServerError := new(shared.InternalServerError)
 	d = json.NewDecoder(bytes.NewReader(data))
 	d.DisallowUnknownFields()
-	if err := d.Decode(&destination); err == nil {
-		u.Destination = destination
-		u.Type = UpdateDestination200ApplicationJSONTypeDestination
+	if err := d.Decode(&internalServerError); err == nil {
+		u.InternalServerError = internalServerError
+		u.Type = UpdateDestination200ApplicationJSONTypeInternalServerError
 		return nil
 	}
 
@@ -84,12 +80,12 @@ func (u *UpdateDestination200ApplicationJSON) UnmarshalJSON(data []byte) error {
 		return nil
 	}
 
-	internalServerError := new(shared.InternalServerError)
+	destination := new(shared.Destination)
 	d = json.NewDecoder(bytes.NewReader(data))
 	d.DisallowUnknownFields()
-	if err := d.Decode(&internalServerError); err == nil {
-		u.InternalServerError = internalServerError
-		u.Type = UpdateDestination200ApplicationJSONTypeInternalServerError
+	if err := d.Decode(&destination); err == nil {
+		u.Destination = destination
+		u.Type = UpdateDestination200ApplicationJSONTypeDestination
 		return nil
 	}
 
@@ -97,29 +93,32 @@ func (u *UpdateDestination200ApplicationJSON) UnmarshalJSON(data []byte) error {
 }
 
 func (u UpdateDestination200ApplicationJSON) MarshalJSON() ([]byte, error) {
-	if u.Destination != nil {
-		return json.Marshal(u.Destination)
+	if u.InternalServerError != nil {
+		return json.Marshal(u.InternalServerError)
 	}
 
 	if u.ValidateErrorJSON != nil {
 		return json.Marshal(u.ValidateErrorJSON)
 	}
 
-	if u.InternalServerError != nil {
-		return json.Marshal(u.InternalServerError)
+	if u.Destination != nil {
+		return json.Marshal(u.Destination)
 	}
 
 	return nil, nil
 }
 
 type UpdateDestinationResponse struct {
+	// HTTP response content type for this operation
 	ContentType string
 	// Something went wrong
 	InternalServerError *shared.InternalServerError
-	StatusCode          int
-	RawResponse         *http.Response
+	// HTTP response status code for this operation
+	StatusCode int
+	// Raw HTTP response; suitable for custom response parsing
+	RawResponse *http.Response
 	// Ok
-	UpdateDestination200ApplicationJSONAnyOf *UpdateDestination200ApplicationJSON
+	UpdateDestination200ApplicationJSONOneOf *UpdateDestination200ApplicationJSON
 	// Validation Failed
 	ValidateErrorJSON *shared.ValidateErrorJSON
 }

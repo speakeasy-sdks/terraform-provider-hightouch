@@ -95,6 +95,7 @@ internal/sdk/pkg/models/shared/destinationupdate.go
 internal/sdk/pkg/models/shared/modelupdate.go
 internal/sdk/pkg/models/shared/sourceupdate.go
 internal/sdk/pkg/models/shared/syncupdate.go
+internal/sdk/pkg/models/shared/security.go
 USAGE.md
 internal/provider/provider.go
 examples/provider/provider.tf
