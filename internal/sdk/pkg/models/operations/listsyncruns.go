@@ -10,10 +10,6 @@ import (
 	"time"
 )
 
-type ListSyncRunsSecurity struct {
-	BearerAuth string `security:"scheme,type=http,subtype=bearer,name=Authorization"`
-}
-
 // ListSyncRunsOrderBy - specify the order
 type ListSyncRunsOrderBy string
 
@@ -73,11 +69,14 @@ type ListSyncRuns200ApplicationJSON struct {
 }
 
 type ListSyncRunsResponse struct {
+	// HTTP response content type for this operation
 	ContentType string
 	// Ok
 	ListSyncRuns200ApplicationJSONObject *ListSyncRuns200ApplicationJSON
-	StatusCode                           int
-	RawResponse                          *http.Response
+	// HTTP response status code for this operation
+	StatusCode int
+	// Raw HTTP response; suitable for custom response parsing
+	RawResponse *http.Response
 	// Validation Failed
 	ValidateErrorJSON *shared.ValidateErrorJSON
 }
