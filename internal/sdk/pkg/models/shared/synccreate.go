@@ -163,7 +163,7 @@ type SyncCreate struct {
 	// Visual: the sync will be trigged based a visual cron configuration on UI
 	//
 	// DBT-cloud: the sync will be trigged based on a dbt cloud job
-	Schedule SyncCreateSchedule `json:"schedule"`
+	Schedule *SyncCreateSchedule `json:"schedule"`
 	// The sync's slug
 	Slug string `json:"slug"`
 }
