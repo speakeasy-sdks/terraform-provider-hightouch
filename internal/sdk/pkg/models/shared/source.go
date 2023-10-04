@@ -2,33 +2,26 @@
 
 package shared
 
-import (
-	"time"
+type InternalServerError string
+
+const (
+	InternalServerErrorInternalServerError InternalServerError = "Internal Server Error"
 )
 
-// Source - The database or warehouse where your data is stored. The starting point for
-// a Hightouch data pipeline.
-type Source struct {
-	// The source's configuration. This specifies general metadata about sources, like connection details
-	// Hightouch will use this configuration to connect to underlying source.
-	//
-	// The schema depends on the source type.
-	//
-	// Consumers should NOT make assumptions on the contents of the
-	// configuration. It may change as Hightouch updates its internal code.
-	Configuration map[string]interface{} `json:"configuration"`
-	// The timestamp when the source was created
-	CreatedAt time.Time `json:"createdAt"`
-	// The source's id
-	ID string `json:"id"`
-	// The source's name
-	Name string `json:"name"`
-	// The source's slug
-	Slug string `json:"slug"`
-	// The source's type (e.g. snowflake or postgres).
-	Type string `json:"type"`
-	// The timestamp when the source was last updated
-	UpdatedAt time.Time `json:"updatedAt"`
-	// The id of the workspace that the source belongs to
-	WorkspaceID string `json:"workspaceId"`
+func (e InternalServerError) ToPointer() *InternalServerError {
+	return &e
+}
+
+func (e *InternalServerError) UnmarshalJSON(data []byte) error {
+	var v string
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	switch v {
+	case "Internal Server Error":
+		*e = InternalServerError(v)
+		return nil
+	default:
+		return fmt.Errorf("invalid value for InternalServerError: %v", v)
+	}
 }
