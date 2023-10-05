@@ -9,10 +9,6 @@ import (
 	"net/http"
 )
 
-type ListModelSecurity struct {
-	BearerAuth string `security:"scheme,type=http,subtype=bearer,name=Authorization"`
-}
-
 // ListModelOrderBy - specify the order
 type ListModelOrderBy string
 
@@ -69,11 +65,14 @@ type ListModel200ApplicationJSON struct {
 }
 
 type ListModelResponse struct {
+	// HTTP response content type for this operation
 	ContentType string
 	// Ok
 	ListModel200ApplicationJSONObject *ListModel200ApplicationJSON
-	StatusCode                        int
-	RawResponse                       *http.Response
+	// HTTP response status code for this operation
+	StatusCode int
+	// Raw HTTP response; suitable for custom response parsing
+	RawResponse *http.Response
 	// Validation Failed
 	ValidateErrorJSON *shared.ValidateErrorJSON
 }
