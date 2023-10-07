@@ -2,6 +2,10 @@
 
 package shared
 
+import (
+	"encoding/json"
+)
+
 type DBTScheduleAccount struct {
 	ID string `json:"id"`
 }
@@ -14,4 +18,52 @@ type DBTSchedule struct {
 	Account         DBTScheduleAccount `json:"account"`
 	DbtCredentialID string             `json:"dbtCredentialId"`
 	Job             DBTScheduleJob     `json:"job"`
+
+	AdditionalProperties interface{} `json:"-"`
+}
+type _DBTSchedule DBTSchedule
+
+func (c *DBTSchedule) UnmarshalJSON(bs []byte) error {
+	data := _DBTSchedule{}
+
+	if err := json.Unmarshal(bs, &data); err != nil {
+		return err
+	}
+	*c = DBTSchedule(data)
+
+	additionalFields := make(map[string]interface{})
+
+	if err := json.Unmarshal(bs, &additionalFields); err != nil {
+		return err
+	}
+	delete(additionalFields, "account")
+	delete(additionalFields, "dbtCredentialId")
+	delete(additionalFields, "job")
+
+	c.AdditionalProperties = additionalFields
+
+	return nil
+}
+
+func (c DBTSchedule) MarshalJSON() ([]byte, error) {
+	out := map[string]interface{}{}
+	bs, err := json.Marshal(_DBTSchedule(c))
+	if err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal([]byte(bs), &out); err != nil {
+		return nil, err
+	}
+
+	bs, err = json.Marshal(c.AdditionalProperties)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal([]byte(bs), &out); err != nil {
+		return nil, err
+	}
+
+	return json.Marshal(out)
 }

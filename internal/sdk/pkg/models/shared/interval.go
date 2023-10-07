@@ -2,7 +2,58 @@
 
 package shared
 
+import (
+	"encoding/json"
+)
+
 type Interval struct {
 	Quantity float64      `json:"quantity"`
 	Unit     IntervalUnit `json:"unit"`
+
+	AdditionalProperties interface{} `json:"-"`
+}
+type _Interval Interval
+
+func (c *Interval) UnmarshalJSON(bs []byte) error {
+	data := _Interval{}
+
+	if err := json.Unmarshal(bs, &data); err != nil {
+		return err
+	}
+	*c = Interval(data)
+
+	additionalFields := make(map[string]interface{})
+
+	if err := json.Unmarshal(bs, &additionalFields); err != nil {
+		return err
+	}
+	delete(additionalFields, "quantity")
+	delete(additionalFields, "unit")
+
+	c.AdditionalProperties = additionalFields
+
+	return nil
+}
+
+func (c Interval) MarshalJSON() ([]byte, error) {
+	out := map[string]interface{}{}
+	bs, err := json.Marshal(_Interval(c))
+	if err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal([]byte(bs), &out); err != nil {
+		return nil, err
+	}
+
+	bs, err = json.Marshal(c.AdditionalProperties)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal([]byte(bs), &out); err != nil {
+		return nil, err
+	}
+
+	return json.Marshal(out)
 }

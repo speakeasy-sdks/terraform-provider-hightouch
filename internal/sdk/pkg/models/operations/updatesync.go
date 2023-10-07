@@ -10,10 +10,6 @@ import (
 	"net/http"
 )
 
-type UpdateSyncSecurity struct {
-	BearerAuth string `security:"scheme,type=http,subtype=bearer,name=Authorization"`
-}
-
 type UpdateSyncRequest struct {
 	SyncUpdate shared.SyncUpdate `request:"mediaType=application/json"`
 	// The sync's ID
@@ -66,15 +62,6 @@ func CreateUpdateSync200ApplicationJSONInternalServerError(internalServerError s
 func (u *UpdateSync200ApplicationJSON) UnmarshalJSON(data []byte) error {
 	var d *json.Decoder
 
-	sync := new(shared.Sync)
-	d = json.NewDecoder(bytes.NewReader(data))
-	d.DisallowUnknownFields()
-	if err := d.Decode(&sync); err == nil {
-		u.Sync = sync
-		u.Type = UpdateSync200ApplicationJSONTypeSync
-		return nil
-	}
-
 	validateErrorJSON := new(shared.ValidateErrorJSON)
 	d = json.NewDecoder(bytes.NewReader(data))
 	d.DisallowUnknownFields()
@@ -93,14 +80,19 @@ func (u *UpdateSync200ApplicationJSON) UnmarshalJSON(data []byte) error {
 		return nil
 	}
 
+	sync := new(shared.Sync)
+	d = json.NewDecoder(bytes.NewReader(data))
+	d.DisallowUnknownFields()
+	if err := d.Decode(&sync); err == nil {
+		u.Sync = sync
+		u.Type = UpdateSync200ApplicationJSONTypeSync
+		return nil
+	}
+
 	return errors.New("could not unmarshal into supported union types")
 }
 
 func (u UpdateSync200ApplicationJSON) MarshalJSON() ([]byte, error) {
-	if u.Sync != nil {
-		return json.Marshal(u.Sync)
-	}
-
 	if u.ValidateErrorJSON != nil {
 		return json.Marshal(u.ValidateErrorJSON)
 	}
@@ -109,17 +101,24 @@ func (u UpdateSync200ApplicationJSON) MarshalJSON() ([]byte, error) {
 		return json.Marshal(u.InternalServerError)
 	}
 
+	if u.Sync != nil {
+		return json.Marshal(u.Sync)
+	}
+
 	return nil, nil
 }
 
 type UpdateSyncResponse struct {
+	// HTTP response content type for this operation
 	ContentType string
 	// Something went wrong
 	InternalServerError *shared.InternalServerError
-	StatusCode          int
-	RawResponse         *http.Response
+	// HTTP response status code for this operation
+	StatusCode int
+	// Raw HTTP response; suitable for custom response parsing
+	RawResponse *http.Response
 	// Ok
-	UpdateSync200ApplicationJSONAnyOf *UpdateSync200ApplicationJSON
+	UpdateSync200ApplicationJSONOneOf *UpdateSync200ApplicationJSON
 	// Validation Failed
 	ValidateErrorJSON *shared.ValidateErrorJSON
 }

@@ -2,10 +2,6 @@
 
 package shared
 
-import (
-	"time"
-)
-
 // ModelCustom - Custom query for sources that doesn't support sql. For example, Airtable.
 type ModelCustom struct {
 	Query interface{} `json:"query"`
@@ -48,42 +44,54 @@ type ModelVisual struct {
 	SecondaryLabel string `json:"secondaryLabel"`
 }
 
-// Model - The SQL query that pulls data from your source to send to your destination.
-// We send your SQL query directly to your source so any SQL that is valid for your source (including functions) is valid in Hightouch.
-type Model struct {
-	// The timestamp when model was created
-	CreatedAt time.Time `json:"createdAt"`
-	// Custom query for sources that doesn't support sql. For example, Airtable.
-	Custom *ModelCustom `json:"custom,omitempty"`
-	// Query that is based on a dbt model
-	Dbt *ModelDbt `json:"dbt,omitempty"`
-	// The id of the model
-	ID string `json:"id"`
-	// If is_schema is true, the model is just used to build other models.
-	// Either as part of visual querying, or as the root of a visual query.
-	IsSchema bool `json:"isSchema"`
-	// The name of the model
-	Name string `json:"name"`
-	// The primary key will be null if the query doesn't get directly synced (e.g. a relationship table for visual querying)
-	PrimaryKey string `json:"primaryKey"`
-	// The type of the query. Available options: custom, raw_sql, tabel, dbt and visual.
-	QueryType string `json:"queryType"`
-	// Standard raw SQL query
-	Raw *ModelRaw `json:"raw,omitempty"`
-	// The slug of the model
-	Slug string `json:"slug"`
-	// The id of the source that model is connected to
-	SourceID string `json:"sourceId"`
-	// The list of id of syncs that uses this model
-	Syncs []string `json:"syncs"`
-	// Table-based query that fetches on a table instead of SQL
-	Table *ModelTable `json:"table,omitempty"`
-	// The tags of the model
-	Tags map[string]string `json:"tags"`
-	// The timestamp when model was lastly updated
-	UpdatedAt time.Time `json:"updatedAt"`
-	// Visual query, used by audience
-	Visual *ModelVisual `json:"visual,omitempty"`
-	// The id of the workspace where the model belongs to
-	WorkspaceID string `json:"workspaceId"`
+type ValidateErrorJSON struct {
+	Details map[string]interface{}   `json:"details"`
+	Message ValidateErrorJSONMessage `json:"message"`
+
+	AdditionalProperties interface{} `json:"-"`
+}
+type _ValidateErrorJSON ValidateErrorJSON
+
+func (c *ValidateErrorJSON) UnmarshalJSON(bs []byte) error {
+	data := _ValidateErrorJSON{}
+
+	if err := json.Unmarshal(bs, &data); err != nil {
+		return err
+	}
+	*c = ValidateErrorJSON(data)
+
+	additionalFields := make(map[string]interface{})
+
+	if err := json.Unmarshal(bs, &additionalFields); err != nil {
+		return err
+	}
+	delete(additionalFields, "details")
+	delete(additionalFields, "message")
+
+	c.AdditionalProperties = additionalFields
+
+	return nil
+}
+
+func (c ValidateErrorJSON) MarshalJSON() ([]byte, error) {
+	out := map[string]interface{}{}
+	bs, err := json.Marshal(_ValidateErrorJSON(c))
+	if err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal([]byte(bs), &out); err != nil {
+		return nil, err
+	}
+
+	bs, err = json.Marshal(c.AdditionalProperties)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal([]byte(bs), &out); err != nil {
+		return nil, err
+	}
+
+	return json.Marshal(out)
 }

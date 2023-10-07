@@ -31,8 +31,54 @@ func (e *ValidateErrorJSONMessage) UnmarshalJSON(data []byte) error {
 	}
 }
 
-// ValidateErrorJSON - Validation Failed
 type ValidateErrorJSON struct {
 	Details map[string]interface{}   `json:"details"`
 	Message ValidateErrorJSONMessage `json:"message"`
+
+	AdditionalProperties interface{} `json:"-"`
+}
+type _ValidateErrorJSON ValidateErrorJSON
+
+func (c *ValidateErrorJSON) UnmarshalJSON(bs []byte) error {
+	data := _ValidateErrorJSON{}
+
+	if err := json.Unmarshal(bs, &data); err != nil {
+		return err
+	}
+	*c = ValidateErrorJSON(data)
+
+	additionalFields := make(map[string]interface{})
+
+	if err := json.Unmarshal(bs, &additionalFields); err != nil {
+		return err
+	}
+	delete(additionalFields, "details")
+	delete(additionalFields, "message")
+
+	c.AdditionalProperties = additionalFields
+
+	return nil
+}
+
+func (c ValidateErrorJSON) MarshalJSON() ([]byte, error) {
+	out := map[string]interface{}{}
+	bs, err := json.Marshal(_ValidateErrorJSON(c))
+	if err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal([]byte(bs), &out); err != nil {
+		return nil, err
+	}
+
+	bs, err = json.Marshal(c.AdditionalProperties)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal([]byte(bs), &out); err != nil {
+		return nil, err
+	}
+
+	return json.Marshal(out)
 }

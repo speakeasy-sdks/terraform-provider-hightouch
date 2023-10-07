@@ -2,6 +2,10 @@
 
 package shared
 
+import (
+	"encoding/json"
+)
+
 // SourceUpdate - The input for updating a Source
 type SourceUpdate struct {
 	// The source's configuration. This specifies general metadata about sources, like connection details
@@ -14,4 +18,51 @@ type SourceUpdate struct {
 	Configuration map[string]interface{} `json:"configuration,omitempty"`
 	// The source's name
 	Name *string `json:"name,omitempty"`
+
+	AdditionalProperties interface{} `json:"-"`
+}
+type _SourceUpdate SourceUpdate
+
+func (c *SourceUpdate) UnmarshalJSON(bs []byte) error {
+	data := _SourceUpdate{}
+
+	if err := json.Unmarshal(bs, &data); err != nil {
+		return err
+	}
+	*c = SourceUpdate(data)
+
+	additionalFields := make(map[string]interface{})
+
+	if err := json.Unmarshal(bs, &additionalFields); err != nil {
+		return err
+	}
+	delete(additionalFields, "configuration")
+	delete(additionalFields, "name")
+
+	c.AdditionalProperties = additionalFields
+
+	return nil
+}
+
+func (c SourceUpdate) MarshalJSON() ([]byte, error) {
+	out := map[string]interface{}{}
+	bs, err := json.Marshal(_SourceUpdate(c))
+	if err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal([]byte(bs), &out); err != nil {
+		return nil, err
+	}
+
+	bs, err = json.Marshal(c.AdditionalProperties)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal([]byte(bs), &out); err != nil {
+		return nil, err
+	}
+
+	return json.Marshal(out)
 }

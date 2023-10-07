@@ -2,6 +2,10 @@
 
 package shared
 
+import (
+	"encoding/json"
+)
+
 // DestinationCreate - The input for creating a Destination
 type DestinationCreate struct {
 	// The destination's configuration. This specifies general metadata about destination, like hostname and username.
@@ -18,4 +22,53 @@ type DestinationCreate struct {
 	Slug string `json:"slug"`
 	// The destination's type (e.g. salesforce or hubspot).
 	Type string `json:"type"`
+
+	AdditionalProperties interface{} `json:"-"`
+}
+type _DestinationCreate DestinationCreate
+
+func (c *DestinationCreate) UnmarshalJSON(bs []byte) error {
+	data := _DestinationCreate{}
+
+	if err := json.Unmarshal(bs, &data); err != nil {
+		return err
+	}
+	*c = DestinationCreate(data)
+
+	additionalFields := make(map[string]interface{})
+
+	if err := json.Unmarshal(bs, &additionalFields); err != nil {
+		return err
+	}
+	delete(additionalFields, "configuration")
+	delete(additionalFields, "name")
+	delete(additionalFields, "slug")
+	delete(additionalFields, "type")
+
+	c.AdditionalProperties = additionalFields
+
+	return nil
+}
+
+func (c DestinationCreate) MarshalJSON() ([]byte, error) {
+	out := map[string]interface{}{}
+	bs, err := json.Marshal(_DestinationCreate(c))
+	if err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal([]byte(bs), &out); err != nil {
+		return nil, err
+	}
+
+	bs, err = json.Marshal(c.AdditionalProperties)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal([]byte(bs), &out); err != nil {
+		return nil, err
+	}
+
+	return json.Marshal(out)
 }
