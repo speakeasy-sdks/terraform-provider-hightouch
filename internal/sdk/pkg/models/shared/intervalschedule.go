@@ -2,6 +2,56 @@
 
 package shared
 
+import (
+	"encoding/json"
+)
+
 type IntervalSchedule struct {
 	Interval Interval `json:"interval"`
+
+	AdditionalProperties interface{} `json:"-"`
+}
+type _IntervalSchedule IntervalSchedule
+
+func (c *IntervalSchedule) UnmarshalJSON(bs []byte) error {
+	data := _IntervalSchedule{}
+
+	if err := json.Unmarshal(bs, &data); err != nil {
+		return err
+	}
+	*c = IntervalSchedule(data)
+
+	additionalFields := make(map[string]interface{})
+
+	if err := json.Unmarshal(bs, &additionalFields); err != nil {
+		return err
+	}
+	delete(additionalFields, "interval")
+
+	c.AdditionalProperties = additionalFields
+
+	return nil
+}
+
+func (c IntervalSchedule) MarshalJSON() ([]byte, error) {
+	out := map[string]interface{}{}
+	bs, err := json.Marshal(_IntervalSchedule(c))
+	if err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal([]byte(bs), &out); err != nil {
+		return nil, err
+	}
+
+	bs, err = json.Marshal(c.AdditionalProperties)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal([]byte(bs), &out); err != nil {
+		return nil, err
+	}
+
+	return json.Marshal(out)
 }

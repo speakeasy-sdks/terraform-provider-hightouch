@@ -2,33 +2,54 @@
 
 package shared
 
-import (
-	"time"
-)
+type ValidateErrorJSON struct {
+	Details map[string]interface{}   `json:"details"`
+	Message ValidateErrorJSONMessage `json:"message"`
 
-// Source - The database or warehouse where your data is stored. The starting point for
-// a Hightouch data pipeline.
-type Source struct {
-	// The source's configuration. This specifies general metadata about sources, like connection details
-	// Hightouch will use this configuration to connect to underlying source.
-	//
-	// The schema depends on the source type.
-	//
-	// Consumers should NOT make assumptions on the contents of the
-	// configuration. It may change as Hightouch updates its internal code.
-	Configuration map[string]interface{} `json:"configuration"`
-	// The timestamp when the source was created
-	CreatedAt time.Time `json:"createdAt"`
-	// The source's id
-	ID string `json:"id"`
-	// The source's name
-	Name string `json:"name"`
-	// The source's slug
-	Slug string `json:"slug"`
-	// The source's type (e.g. snowflake or postgres).
-	Type string `json:"type"`
-	// The timestamp when the source was last updated
-	UpdatedAt time.Time `json:"updatedAt"`
-	// The id of the workspace that the source belongs to
-	WorkspaceID string `json:"workspaceId"`
+	AdditionalProperties interface{} `json:"-"`
+}
+type _ValidateErrorJSON ValidateErrorJSON
+
+func (c *ValidateErrorJSON) UnmarshalJSON(bs []byte) error {
+	data := _ValidateErrorJSON{}
+
+	if err := json.Unmarshal(bs, &data); err != nil {
+		return err
+	}
+	*c = ValidateErrorJSON(data)
+
+	additionalFields := make(map[string]interface{})
+
+	if err := json.Unmarshal(bs, &additionalFields); err != nil {
+		return err
+	}
+	delete(additionalFields, "details")
+	delete(additionalFields, "message")
+
+	c.AdditionalProperties = additionalFields
+
+	return nil
+}
+
+func (c ValidateErrorJSON) MarshalJSON() ([]byte, error) {
+	out := map[string]interface{}{}
+	bs, err := json.Marshal(_ValidateErrorJSON(c))
+	if err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal([]byte(bs), &out); err != nil {
+		return nil, err
+	}
+
+	bs, err = json.Marshal(c.AdditionalProperties)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal([]byte(bs), &out); err != nil {
+		return nil, err
+	}
+
+	return json.Marshal(out)
 }

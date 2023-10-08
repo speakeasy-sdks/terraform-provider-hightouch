@@ -2,8 +2,57 @@
 
 package shared
 
-// TriggerRunIDGraphOutput - Ok
+import (
+	"encoding/json"
+)
+
 type TriggerRunIDGraphOutput struct {
 	// The id of the triggered run.
 	ID string `json:"id"`
+
+	AdditionalProperties interface{} `json:"-"`
+}
+type _TriggerRunIDGraphOutput TriggerRunIDGraphOutput
+
+func (c *TriggerRunIDGraphOutput) UnmarshalJSON(bs []byte) error {
+	data := _TriggerRunIDGraphOutput{}
+
+	if err := json.Unmarshal(bs, &data); err != nil {
+		return err
+	}
+	*c = TriggerRunIDGraphOutput(data)
+
+	additionalFields := make(map[string]interface{})
+
+	if err := json.Unmarshal(bs, &additionalFields); err != nil {
+		return err
+	}
+	delete(additionalFields, "id")
+
+	c.AdditionalProperties = additionalFields
+
+	return nil
+}
+
+func (c TriggerRunIDGraphOutput) MarshalJSON() ([]byte, error) {
+	out := map[string]interface{}{}
+	bs, err := json.Marshal(_TriggerRunIDGraphOutput(c))
+	if err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal([]byte(bs), &out); err != nil {
+		return nil, err
+	}
+
+	bs, err = json.Marshal(c.AdditionalProperties)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal([]byte(bs), &out); err != nil {
+		return nil, err
+	}
+
+	return json.Marshal(out)
 }

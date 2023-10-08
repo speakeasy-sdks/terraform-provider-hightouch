@@ -3,6 +3,7 @@
 package shared
 
 import (
+	"encoding/json"
 	"time"
 )
 
@@ -76,4 +77,60 @@ type SyncRun struct {
 	Status SyncRunStatus `json:"status"`
 	// The number of rows that were successfully processed by the destination.
 	SuccessfulRows SyncRunSuccessfulRows `json:"successfulRows"`
+
+	AdditionalProperties interface{} `json:"-"`
+}
+type _SyncRun SyncRun
+
+func (c *SyncRun) UnmarshalJSON(bs []byte) error {
+	data := _SyncRun{}
+
+	if err := json.Unmarshal(bs, &data); err != nil {
+		return err
+	}
+	*c = SyncRun(data)
+
+	additionalFields := make(map[string]interface{})
+
+	if err := json.Unmarshal(bs, &additionalFields); err != nil {
+		return err
+	}
+	delete(additionalFields, "completionRatio")
+	delete(additionalFields, "createdAt")
+	delete(additionalFields, "error")
+	delete(additionalFields, "failedRows")
+	delete(additionalFields, "finishedAt")
+	delete(additionalFields, "id")
+	delete(additionalFields, "plannedRows")
+	delete(additionalFields, "querySize")
+	delete(additionalFields, "startedAt")
+	delete(additionalFields, "status")
+	delete(additionalFields, "successfulRows")
+
+	c.AdditionalProperties = additionalFields
+
+	return nil
+}
+
+func (c SyncRun) MarshalJSON() ([]byte, error) {
+	out := map[string]interface{}{}
+	bs, err := json.Marshal(_SyncRun(c))
+	if err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal([]byte(bs), &out); err != nil {
+		return nil, err
+	}
+
+	bs, err = json.Marshal(c.AdditionalProperties)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal([]byte(bs), &out); err != nil {
+		return nil, err
+	}
+
+	return json.Marshal(out)
 }

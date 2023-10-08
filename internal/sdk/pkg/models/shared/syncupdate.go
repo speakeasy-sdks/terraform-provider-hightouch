@@ -160,4 +160,52 @@ type SyncUpdate struct {
 	//
 	// DBT-cloud: the sync will be trigged based on a dbt cloud job
 	Schedule *SyncUpdateSchedule `json:"schedule,omitempty"`
+
+	AdditionalProperties interface{} `json:"-"`
+}
+type _SyncUpdate SyncUpdate
+
+func (c *SyncUpdate) UnmarshalJSON(bs []byte) error {
+	data := _SyncUpdate{}
+
+	if err := json.Unmarshal(bs, &data); err != nil {
+		return err
+	}
+	*c = SyncUpdate(data)
+
+	additionalFields := make(map[string]interface{})
+
+	if err := json.Unmarshal(bs, &additionalFields); err != nil {
+		return err
+	}
+	delete(additionalFields, "configuration")
+	delete(additionalFields, "disabled")
+	delete(additionalFields, "schedule")
+
+	c.AdditionalProperties = additionalFields
+
+	return nil
+}
+
+func (c SyncUpdate) MarshalJSON() ([]byte, error) {
+	out := map[string]interface{}{}
+	bs, err := json.Marshal(_SyncUpdate(c))
+	if err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal([]byte(bs), &out); err != nil {
+		return nil, err
+	}
+
+	bs, err = json.Marshal(c.AdditionalProperties)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal([]byte(bs), &out); err != nil {
+		return nil, err
+	}
+
+	return json.Marshal(out)
 }

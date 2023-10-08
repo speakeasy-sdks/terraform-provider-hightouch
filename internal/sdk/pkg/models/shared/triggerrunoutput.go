@@ -2,9 +2,59 @@
 
 package shared
 
+import (
+	"encoding/json"
+)
+
 // TriggerRunOutput - The output of a trigger action to run syncs
 type TriggerRunOutput struct {
 	// The id of the triggered sync run. This can be passed to `/sync/runs` to
 	// get the run's status.
 	ID string `json:"id"`
+
+	AdditionalProperties interface{} `json:"-"`
+}
+type _TriggerRunOutput TriggerRunOutput
+
+func (c *TriggerRunOutput) UnmarshalJSON(bs []byte) error {
+	data := _TriggerRunOutput{}
+
+	if err := json.Unmarshal(bs, &data); err != nil {
+		return err
+	}
+	*c = TriggerRunOutput(data)
+
+	additionalFields := make(map[string]interface{})
+
+	if err := json.Unmarshal(bs, &additionalFields); err != nil {
+		return err
+	}
+	delete(additionalFields, "id")
+
+	c.AdditionalProperties = additionalFields
+
+	return nil
+}
+
+func (c TriggerRunOutput) MarshalJSON() ([]byte, error) {
+	out := map[string]interface{}{}
+	bs, err := json.Marshal(_TriggerRunOutput(c))
+	if err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal([]byte(bs), &out); err != nil {
+		return nil, err
+	}
+
+	bs, err = json.Marshal(c.AdditionalProperties)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal([]byte(bs), &out); err != nil {
+		return nil, err
+	}
+
+	return json.Marshal(out)
 }

@@ -10,10 +10,6 @@ import (
 	"net/http"
 )
 
-type TriggerRunCustomSecurity struct {
-	BearerAuth string `security:"scheme,type=http,subtype=bearer,name=Authorization"`
-}
-
 type TriggerRunCustom200ApplicationJSONType string
 
 const (
@@ -83,11 +79,14 @@ func (u TriggerRunCustom200ApplicationJSON) MarshalJSON() ([]byte, error) {
 }
 
 type TriggerRunCustomResponse struct {
+	// HTTP response content type for this operation
 	ContentType string
-	StatusCode  int
+	// HTTP response status code for this operation
+	StatusCode int
+	// Raw HTTP response; suitable for custom response parsing
 	RawResponse *http.Response
 	// Ok
-	TriggerRunCustom200ApplicationJSONAnyOf *TriggerRunCustom200ApplicationJSON
+	TriggerRunCustom200ApplicationJSONOneOf *TriggerRunCustom200ApplicationJSON
 	// Validation Failed
 	ValidateErrorJSON *shared.ValidateErrorJSON
 }
