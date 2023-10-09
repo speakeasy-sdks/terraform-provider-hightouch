@@ -2,35 +2,54 @@
 
 package shared
 
-import (
-	"time"
-)
+type ValidateErrorJSON struct {
+	Details map[string]interface{}   `json:"details"`
+	Message ValidateErrorJSONMessage `json:"message"`
 
-// Destination - The service receiving your data (e.g. Salesforce, Hubspot, Customer.io, or a
-// SFTP server)
-type Destination struct {
-	// The destination's configuration. This specifies general metadata about destination, like hostname and username.
-	// Hightouch will be using this configuration to connect to destination.
-	//
-	// The schema depends on the destination type.
-	//
-	// Consumers should NOT make assumptions on the contents of the
-	// configuration. It may change as Hightouch updates its internal code.
-	Configuration map[string]interface{} `json:"configuration"`
-	// The timestamp when the destination was created
-	CreatedAt time.Time `json:"createdAt"`
-	// The destination's id
-	ID string `json:"id"`
-	// The destination's name
-	Name string `json:"name"`
-	// The destination's slug
-	Slug string `json:"slug"`
-	// A list of syncs that sync to this destination.
-	Syncs []string `json:"syncs"`
-	// The destination's type (e.g. salesforce or hubspot).
-	Type string `json:"type"`
-	// The timestamp when the destination was last updated
-	UpdatedAt time.Time `json:"updatedAt"`
-	// The id of the workspace that the destination belongs to
-	WorkspaceID string `json:"workspaceId"`
+	AdditionalProperties interface{} `json:"-"`
+}
+type _ValidateErrorJSON ValidateErrorJSON
+
+func (c *ValidateErrorJSON) UnmarshalJSON(bs []byte) error {
+	data := _ValidateErrorJSON{}
+
+	if err := json.Unmarshal(bs, &data); err != nil {
+		return err
+	}
+	*c = ValidateErrorJSON(data)
+
+	additionalFields := make(map[string]interface{})
+
+	if err := json.Unmarshal(bs, &additionalFields); err != nil {
+		return err
+	}
+	delete(additionalFields, "details")
+	delete(additionalFields, "message")
+
+	c.AdditionalProperties = additionalFields
+
+	return nil
+}
+
+func (c ValidateErrorJSON) MarshalJSON() ([]byte, error) {
+	out := map[string]interface{}{}
+	bs, err := json.Marshal(_ValidateErrorJSON(c))
+	if err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal([]byte(bs), &out); err != nil {
+		return nil, err
+	}
+
+	bs, err = json.Marshal(c.AdditionalProperties)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal([]byte(bs), &out); err != nil {
+		return nil, err
+	}
+
+	return json.Marshal(out)
 }

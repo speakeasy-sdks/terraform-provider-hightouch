@@ -163,7 +163,58 @@ type SyncCreate struct {
 	// Visual: the sync will be trigged based a visual cron configuration on UI
 	//
 	// DBT-cloud: the sync will be trigged based on a dbt cloud job
-	Schedule SyncCreateSchedule `json:"schedule"`
+	Schedule *SyncCreateSchedule `json:"schedule"`
 	// The sync's slug
 	Slug string `json:"slug"`
+
+	AdditionalProperties interface{} `json:"-"`
+}
+type _SyncCreate SyncCreate
+
+func (c *SyncCreate) UnmarshalJSON(bs []byte) error {
+	data := _SyncCreate{}
+
+	if err := json.Unmarshal(bs, &data); err != nil {
+		return err
+	}
+	*c = SyncCreate(data)
+
+	additionalFields := make(map[string]interface{})
+
+	if err := json.Unmarshal(bs, &additionalFields); err != nil {
+		return err
+	}
+	delete(additionalFields, "configuration")
+	delete(additionalFields, "destinationId")
+	delete(additionalFields, "disabled")
+	delete(additionalFields, "modelId")
+	delete(additionalFields, "schedule")
+	delete(additionalFields, "slug")
+
+	c.AdditionalProperties = additionalFields
+
+	return nil
+}
+
+func (c SyncCreate) MarshalJSON() ([]byte, error) {
+	out := map[string]interface{}{}
+	bs, err := json.Marshal(_SyncCreate(c))
+	if err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal([]byte(bs), &out); err != nil {
+		return nil, err
+	}
+
+	bs, err = json.Marshal(c.AdditionalProperties)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal([]byte(bs), &out); err != nil {
+		return nil, err
+	}
+
+	return json.Marshal(out)
 }

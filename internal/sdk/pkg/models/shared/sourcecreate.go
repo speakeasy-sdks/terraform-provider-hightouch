@@ -2,6 +2,10 @@
 
 package shared
 
+import (
+	"encoding/json"
+)
+
 // SourceCreate - The input for creating a Source
 type SourceCreate struct {
 	// The source's configuration. This specifies general metadata about sources, like connection details
@@ -18,4 +22,53 @@ type SourceCreate struct {
 	Slug string `json:"slug"`
 	// The source's type (e.g. snowflake or postgres).
 	Type string `json:"type"`
+
+	AdditionalProperties interface{} `json:"-"`
+}
+type _SourceCreate SourceCreate
+
+func (c *SourceCreate) UnmarshalJSON(bs []byte) error {
+	data := _SourceCreate{}
+
+	if err := json.Unmarshal(bs, &data); err != nil {
+		return err
+	}
+	*c = SourceCreate(data)
+
+	additionalFields := make(map[string]interface{})
+
+	if err := json.Unmarshal(bs, &additionalFields); err != nil {
+		return err
+	}
+	delete(additionalFields, "configuration")
+	delete(additionalFields, "name")
+	delete(additionalFields, "slug")
+	delete(additionalFields, "type")
+
+	c.AdditionalProperties = additionalFields
+
+	return nil
+}
+
+func (c SourceCreate) MarshalJSON() ([]byte, error) {
+	out := map[string]interface{}{}
+	bs, err := json.Marshal(_SourceCreate(c))
+	if err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal([]byte(bs), &out); err != nil {
+		return nil, err
+	}
+
+	bs, err = json.Marshal(c.AdditionalProperties)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal([]byte(bs), &out); err != nil {
+		return nil, err
+	}
+
+	return json.Marshal(out)
 }

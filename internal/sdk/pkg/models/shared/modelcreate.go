@@ -2,6 +2,10 @@
 
 package shared
 
+import (
+	"encoding/json"
+)
+
 // ModelCreateCustom - Custom query for sources that doesn't support sql. For example, Airtable.
 type ModelCreateCustom struct {
 	Query interface{} `json:"query"`
@@ -55,4 +59,60 @@ type ModelCreate struct {
 	Table *ModelCreateTable `json:"table,omitempty"`
 	// Visual query, used by audience
 	Visual *ModelCreateVisual `json:"visual,omitempty"`
+
+	AdditionalProperties interface{} `json:"-"`
+}
+type _ModelCreate ModelCreate
+
+func (c *ModelCreate) UnmarshalJSON(bs []byte) error {
+	data := _ModelCreate{}
+
+	if err := json.Unmarshal(bs, &data); err != nil {
+		return err
+	}
+	*c = ModelCreate(data)
+
+	additionalFields := make(map[string]interface{})
+
+	if err := json.Unmarshal(bs, &additionalFields); err != nil {
+		return err
+	}
+	delete(additionalFields, "custom")
+	delete(additionalFields, "dbt")
+	delete(additionalFields, "isSchema")
+	delete(additionalFields, "name")
+	delete(additionalFields, "primaryKey")
+	delete(additionalFields, "queryType")
+	delete(additionalFields, "raw")
+	delete(additionalFields, "slug")
+	delete(additionalFields, "sourceId")
+	delete(additionalFields, "table")
+	delete(additionalFields, "visual")
+
+	c.AdditionalProperties = additionalFields
+
+	return nil
+}
+
+func (c ModelCreate) MarshalJSON() ([]byte, error) {
+	out := map[string]interface{}{}
+	bs, err := json.Marshal(_ModelCreate(c))
+	if err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal([]byte(bs), &out); err != nil {
+		return nil, err
+	}
+
+	bs, err = json.Marshal(c.AdditionalProperties)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal([]byte(bs), &out); err != nil {
+		return nil, err
+	}
+
+	return json.Marshal(out)
 }

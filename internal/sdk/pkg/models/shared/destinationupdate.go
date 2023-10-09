@@ -2,6 +2,10 @@
 
 package shared
 
+import (
+	"encoding/json"
+)
+
 // DestinationUpdate - The input for updating a Destination
 type DestinationUpdate struct {
 	// The destination's configuration. This specifies general metadata about destination, like hostname and username.
@@ -14,4 +18,51 @@ type DestinationUpdate struct {
 	Configuration map[string]interface{} `json:"configuration,omitempty"`
 	// The destination's name
 	Name *string `json:"name,omitempty"`
+
+	AdditionalProperties interface{} `json:"-"`
+}
+type _DestinationUpdate DestinationUpdate
+
+func (c *DestinationUpdate) UnmarshalJSON(bs []byte) error {
+	data := _DestinationUpdate{}
+
+	if err := json.Unmarshal(bs, &data); err != nil {
+		return err
+	}
+	*c = DestinationUpdate(data)
+
+	additionalFields := make(map[string]interface{})
+
+	if err := json.Unmarshal(bs, &additionalFields); err != nil {
+		return err
+	}
+	delete(additionalFields, "configuration")
+	delete(additionalFields, "name")
+
+	c.AdditionalProperties = additionalFields
+
+	return nil
+}
+
+func (c DestinationUpdate) MarshalJSON() ([]byte, error) {
+	out := map[string]interface{}{}
+	bs, err := json.Marshal(_DestinationUpdate(c))
+	if err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal([]byte(bs), &out); err != nil {
+		return nil, err
+	}
+
+	bs, err = json.Marshal(c.AdditionalProperties)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal([]byte(bs), &out); err != nil {
+		return nil, err
+	}
+
+	return json.Marshal(out)
 }
