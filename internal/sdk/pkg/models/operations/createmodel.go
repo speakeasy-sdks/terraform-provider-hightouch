@@ -10,10 +10,6 @@ import (
 	"net/http"
 )
 
-type CreateModelSecurity struct {
-	BearerAuth string `security:"scheme,type=http,subtype=bearer,name=Authorization"`
-}
-
 type CreateModel200ApplicationJSONType string
 
 const (
@@ -60,15 +56,6 @@ func CreateCreateModel200ApplicationJSONInternalServerError(internalServerError 
 func (u *CreateModel200ApplicationJSON) UnmarshalJSON(data []byte) error {
 	var d *json.Decoder
 
-	model := new(shared.Model)
-	d = json.NewDecoder(bytes.NewReader(data))
-	d.DisallowUnknownFields()
-	if err := d.Decode(&model); err == nil {
-		u.Model = model
-		u.Type = CreateModel200ApplicationJSONTypeModel
-		return nil
-	}
-
 	validateErrorJSON := new(shared.ValidateErrorJSON)
 	d = json.NewDecoder(bytes.NewReader(data))
 	d.DisallowUnknownFields()
@@ -87,14 +74,19 @@ func (u *CreateModel200ApplicationJSON) UnmarshalJSON(data []byte) error {
 		return nil
 	}
 
+	model := new(shared.Model)
+	d = json.NewDecoder(bytes.NewReader(data))
+	d.DisallowUnknownFields()
+	if err := d.Decode(&model); err == nil {
+		u.Model = model
+		u.Type = CreateModel200ApplicationJSONTypeModel
+		return nil
+	}
+
 	return errors.New("could not unmarshal into supported union types")
 }
 
 func (u CreateModel200ApplicationJSON) MarshalJSON() ([]byte, error) {
-	if u.Model != nil {
-		return json.Marshal(u.Model)
-	}
-
 	if u.ValidateErrorJSON != nil {
 		return json.Marshal(u.ValidateErrorJSON)
 	}
@@ -103,17 +95,24 @@ func (u CreateModel200ApplicationJSON) MarshalJSON() ([]byte, error) {
 		return json.Marshal(u.InternalServerError)
 	}
 
+	if u.Model != nil {
+		return json.Marshal(u.Model)
+	}
+
 	return nil, nil
 }
 
 type CreateModelResponse struct {
+	// HTTP response content type for this operation
 	ContentType string
 	// Ok
-	CreateModel200ApplicationJSONAnyOf *CreateModel200ApplicationJSON
+	CreateModel200ApplicationJSONOneOf *CreateModel200ApplicationJSON
 	// Something went wrong
 	InternalServerError *shared.InternalServerError
-	StatusCode          int
-	RawResponse         *http.Response
+	// HTTP response status code for this operation
+	StatusCode int
+	// Raw HTTP response; suitable for custom response parsing
+	RawResponse *http.Response
 	// Conflict
 	ValidateErrorJSON *shared.ValidateErrorJSON
 }
