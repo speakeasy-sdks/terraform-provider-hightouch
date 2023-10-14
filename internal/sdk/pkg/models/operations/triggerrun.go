@@ -7,10 +7,6 @@ import (
 	"net/http"
 )
 
-type TriggerRunSecurity struct {
-	BearerAuth string `security:"scheme,type=http,subtype=bearer,name=Authorization"`
-}
-
 type TriggerRunRequest struct {
 	TriggerRunInput *shared.TriggerRunInput `request:"mediaType=application/json"`
 	// The id of the sync to trigger a run
@@ -18,8 +14,11 @@ type TriggerRunRequest struct {
 }
 
 type TriggerRunResponse struct {
+	// HTTP response content type for this operation
 	ContentType string
-	StatusCode  int
+	// HTTP response status code for this operation
+	StatusCode int
+	// Raw HTTP response; suitable for custom response parsing
 	RawResponse *http.Response
 	// Ok
 	TriggerRunOutput *shared.TriggerRunOutput
