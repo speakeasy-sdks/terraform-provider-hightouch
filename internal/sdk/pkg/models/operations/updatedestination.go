@@ -3,21 +3,30 @@
 package operations
 
 import (
-	"bytes"
-	"encoding/json"
 	"errors"
 	"hightouch/internal/sdk/pkg/models/shared"
+	"hightouch/internal/sdk/pkg/utils"
 	"net/http"
 )
-
-type UpdateDestinationSecurity struct {
-	BearerAuth string `security:"scheme,type=http,subtype=bearer,name=Authorization"`
-}
 
 type UpdateDestinationRequest struct {
 	DestinationUpdate shared.DestinationUpdate `request:"mediaType=application/json"`
 	// The destination's ID
 	DestinationID float64 `pathParam:"style=simple,explode=false,name=destinationId"`
+}
+
+func (o *UpdateDestinationRequest) GetDestinationUpdate() shared.DestinationUpdate {
+	if o == nil {
+		return shared.DestinationUpdate{}
+	}
+	return o.DestinationUpdate
+}
+
+func (o *UpdateDestinationRequest) GetDestinationID() float64 {
+	if o == nil {
+		return 0.0
+	}
+	return o.DestinationID
 }
 
 type UpdateDestination200ApplicationJSONType string
@@ -64,30 +73,23 @@ func CreateUpdateDestination200ApplicationJSONInternalServerError(internalServer
 }
 
 func (u *UpdateDestination200ApplicationJSON) UnmarshalJSON(data []byte) error {
-	var d *json.Decoder
-
-	destination := new(shared.Destination)
-	d = json.NewDecoder(bytes.NewReader(data))
-	d.DisallowUnknownFields()
-	if err := d.Decode(&destination); err == nil {
-		u.Destination = destination
-		u.Type = UpdateDestination200ApplicationJSONTypeDestination
-		return nil
-	}
 
 	validateErrorJSON := new(shared.ValidateErrorJSON)
-	d = json.NewDecoder(bytes.NewReader(data))
-	d.DisallowUnknownFields()
-	if err := d.Decode(&validateErrorJSON); err == nil {
+	if err := utils.UnmarshalJSON(data, &validateErrorJSON, "", true, true); err == nil {
 		u.ValidateErrorJSON = validateErrorJSON
 		u.Type = UpdateDestination200ApplicationJSONTypeValidateErrorJSON
 		return nil
 	}
 
+	destination := new(shared.Destination)
+	if err := utils.UnmarshalJSON(data, &destination, "", true, true); err == nil {
+		u.Destination = destination
+		u.Type = UpdateDestination200ApplicationJSONTypeDestination
+		return nil
+	}
+
 	internalServerError := new(shared.InternalServerError)
-	d = json.NewDecoder(bytes.NewReader(data))
-	d.DisallowUnknownFields()
-	if err := d.Decode(&internalServerError); err == nil {
+	if err := utils.UnmarshalJSON(data, &internalServerError, "", true, true); err == nil {
 		u.InternalServerError = internalServerError
 		u.Type = UpdateDestination200ApplicationJSONTypeInternalServerError
 		return nil
@@ -98,28 +100,73 @@ func (u *UpdateDestination200ApplicationJSON) UnmarshalJSON(data []byte) error {
 
 func (u UpdateDestination200ApplicationJSON) MarshalJSON() ([]byte, error) {
 	if u.Destination != nil {
-		return json.Marshal(u.Destination)
+		return utils.MarshalJSON(u.Destination, "", true)
 	}
 
 	if u.ValidateErrorJSON != nil {
-		return json.Marshal(u.ValidateErrorJSON)
+		return utils.MarshalJSON(u.ValidateErrorJSON, "", true)
 	}
 
 	if u.InternalServerError != nil {
-		return json.Marshal(u.InternalServerError)
+		return utils.MarshalJSON(u.InternalServerError, "", true)
 	}
 
-	return nil, nil
+	return nil, errors.New("could not marshal union type: all fields are null")
 }
 
 type UpdateDestinationResponse struct {
+	// HTTP response content type for this operation
 	ContentType string
 	// Something went wrong
 	InternalServerError *shared.InternalServerError
-	StatusCode          int
-	RawResponse         *http.Response
+	// HTTP response status code for this operation
+	StatusCode int
+	// Raw HTTP response; suitable for custom response parsing
+	RawResponse *http.Response
 	// Ok
-	UpdateDestination200ApplicationJSONAnyOf *UpdateDestination200ApplicationJSON
+	UpdateDestination200ApplicationJSONOneOf *UpdateDestination200ApplicationJSON
 	// Validation Failed
 	ValidateErrorJSON *shared.ValidateErrorJSON
+}
+
+func (o *UpdateDestinationResponse) GetContentType() string {
+	if o == nil {
+		return ""
+	}
+	return o.ContentType
+}
+
+func (o *UpdateDestinationResponse) GetInternalServerError() *shared.InternalServerError {
+	if o == nil {
+		return nil
+	}
+	return o.InternalServerError
+}
+
+func (o *UpdateDestinationResponse) GetStatusCode() int {
+	if o == nil {
+		return 0
+	}
+	return o.StatusCode
+}
+
+func (o *UpdateDestinationResponse) GetRawResponse() *http.Response {
+	if o == nil {
+		return nil
+	}
+	return o.RawResponse
+}
+
+func (o *UpdateDestinationResponse) GetUpdateDestination200ApplicationJSONOneOf() *UpdateDestination200ApplicationJSON {
+	if o == nil {
+		return nil
+	}
+	return o.UpdateDestination200ApplicationJSONOneOf
+}
+
+func (o *UpdateDestinationResponse) GetValidateErrorJSON() *shared.ValidateErrorJSON {
+	if o == nil {
+		return nil
+	}
+	return o.ValidateErrorJSON
 }

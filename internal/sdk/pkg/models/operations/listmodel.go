@@ -6,12 +6,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"hightouch/internal/sdk/pkg/models/shared"
+	"hightouch/internal/sdk/pkg/utils"
 	"net/http"
 )
-
-type ListModelSecurity struct {
-	BearerAuth string `security:"scheme,type=http,subtype=bearer,name=Authorization"`
-}
 
 // ListModelOrderBy - specify the order
 type ListModelOrderBy string
@@ -52,15 +49,61 @@ func (e *ListModelOrderBy) UnmarshalJSON(data []byte) error {
 
 type ListModelRequest struct {
 	// limit the number of objects returned (default is 100)
-	Limit *float64 `queryParam:"style=form,explode=true,name=limit"`
+	Limit *float64 `default:"100" queryParam:"style=form,explode=true,name=limit"`
 	// filter based on name
 	Name *string `queryParam:"style=form,explode=true,name=name"`
 	// set the offset on results (for pagination)
-	Offset *float64 `queryParam:"style=form,explode=true,name=offset"`
+	Offset *float64 `default:"0" queryParam:"style=form,explode=true,name=offset"`
 	// specify the order
-	OrderBy *ListModelOrderBy `queryParam:"style=form,explode=true,name=orderBy"`
+	OrderBy *ListModelOrderBy `default:"id" queryParam:"style=form,explode=true,name=orderBy"`
 	// filter based on slug
 	Slug *string `queryParam:"style=form,explode=true,name=slug"`
+}
+
+func (l ListModelRequest) MarshalJSON() ([]byte, error) {
+	return utils.MarshalJSON(l, "", false)
+}
+
+func (l *ListModelRequest) UnmarshalJSON(data []byte) error {
+	if err := utils.UnmarshalJSON(data, &l, "", false, false); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (o *ListModelRequest) GetLimit() *float64 {
+	if o == nil {
+		return nil
+	}
+	return o.Limit
+}
+
+func (o *ListModelRequest) GetName() *string {
+	if o == nil {
+		return nil
+	}
+	return o.Name
+}
+
+func (o *ListModelRequest) GetOffset() *float64 {
+	if o == nil {
+		return nil
+	}
+	return o.Offset
+}
+
+func (o *ListModelRequest) GetOrderBy() *ListModelOrderBy {
+	if o == nil {
+		return nil
+	}
+	return o.OrderBy
+}
+
+func (o *ListModelRequest) GetSlug() *string {
+	if o == nil {
+		return nil
+	}
+	return o.Slug
 }
 
 // ListModel200ApplicationJSON - Ok
@@ -68,12 +111,57 @@ type ListModel200ApplicationJSON struct {
 	Data []shared.Model `json:"data"`
 }
 
+func (o *ListModel200ApplicationJSON) GetData() []shared.Model {
+	if o == nil {
+		return []shared.Model{}
+	}
+	return o.Data
+}
+
 type ListModelResponse struct {
+	// HTTP response content type for this operation
 	ContentType string
 	// Ok
 	ListModel200ApplicationJSONObject *ListModel200ApplicationJSON
-	StatusCode                        int
-	RawResponse                       *http.Response
+	// HTTP response status code for this operation
+	StatusCode int
+	// Raw HTTP response; suitable for custom response parsing
+	RawResponse *http.Response
 	// Validation Failed
 	ValidateErrorJSON *shared.ValidateErrorJSON
+}
+
+func (o *ListModelResponse) GetContentType() string {
+	if o == nil {
+		return ""
+	}
+	return o.ContentType
+}
+
+func (o *ListModelResponse) GetListModel200ApplicationJSONObject() *ListModel200ApplicationJSON {
+	if o == nil {
+		return nil
+	}
+	return o.ListModel200ApplicationJSONObject
+}
+
+func (o *ListModelResponse) GetStatusCode() int {
+	if o == nil {
+		return 0
+	}
+	return o.StatusCode
+}
+
+func (o *ListModelResponse) GetRawResponse() *http.Response {
+	if o == nil {
+		return nil
+	}
+	return o.RawResponse
+}
+
+func (o *ListModelResponse) GetValidateErrorJSON() *shared.ValidateErrorJSON {
+	if o == nil {
+		return nil
+	}
+	return o.ValidateErrorJSON
 }

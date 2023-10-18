@@ -31,8 +31,21 @@ func (e *ValidateErrorJSONMessage) UnmarshalJSON(data []byte) error {
 	}
 }
 
-// ValidateErrorJSON - Validation Failed
 type ValidateErrorJSON struct {
 	Details map[string]interface{}   `json:"details"`
 	Message ValidateErrorJSONMessage `json:"message"`
+}
+
+func (o *ValidateErrorJSON) GetDetails() map[string]interface{} {
+	if o == nil {
+		return map[string]interface{}{}
+	}
+	return o.Details
+}
+
+func (o *ValidateErrorJSON) GetMessage() ValidateErrorJSONMessage {
+	if o == nil {
+		return ValidateErrorJSONMessage("")
+	}
+	return o.Message
 }

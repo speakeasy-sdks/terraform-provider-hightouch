@@ -3,16 +3,11 @@
 package operations
 
 import (
-	"bytes"
-	"encoding/json"
 	"errors"
 	"hightouch/internal/sdk/pkg/models/shared"
+	"hightouch/internal/sdk/pkg/utils"
 	"net/http"
 )
-
-type CreateSourceSecurity struct {
-	BearerAuth string `security:"scheme,type=http,subtype=bearer,name=Authorization"`
-}
 
 type CreateSource200ApplicationJSONType string
 
@@ -58,30 +53,23 @@ func CreateCreateSource200ApplicationJSONInternalServerError(internalServerError
 }
 
 func (u *CreateSource200ApplicationJSON) UnmarshalJSON(data []byte) error {
-	var d *json.Decoder
-
-	source := new(shared.Source)
-	d = json.NewDecoder(bytes.NewReader(data))
-	d.DisallowUnknownFields()
-	if err := d.Decode(&source); err == nil {
-		u.Source = source
-		u.Type = CreateSource200ApplicationJSONTypeSource
-		return nil
-	}
 
 	validateErrorJSON := new(shared.ValidateErrorJSON)
-	d = json.NewDecoder(bytes.NewReader(data))
-	d.DisallowUnknownFields()
-	if err := d.Decode(&validateErrorJSON); err == nil {
+	if err := utils.UnmarshalJSON(data, &validateErrorJSON, "", true, true); err == nil {
 		u.ValidateErrorJSON = validateErrorJSON
 		u.Type = CreateSource200ApplicationJSONTypeValidateErrorJSON
 		return nil
 	}
 
+	source := new(shared.Source)
+	if err := utils.UnmarshalJSON(data, &source, "", true, true); err == nil {
+		u.Source = source
+		u.Type = CreateSource200ApplicationJSONTypeSource
+		return nil
+	}
+
 	internalServerError := new(shared.InternalServerError)
-	d = json.NewDecoder(bytes.NewReader(data))
-	d.DisallowUnknownFields()
-	if err := d.Decode(&internalServerError); err == nil {
+	if err := utils.UnmarshalJSON(data, &internalServerError, "", true, true); err == nil {
 		u.InternalServerError = internalServerError
 		u.Type = CreateSource200ApplicationJSONTypeInternalServerError
 		return nil
@@ -92,28 +80,73 @@ func (u *CreateSource200ApplicationJSON) UnmarshalJSON(data []byte) error {
 
 func (u CreateSource200ApplicationJSON) MarshalJSON() ([]byte, error) {
 	if u.Source != nil {
-		return json.Marshal(u.Source)
+		return utils.MarshalJSON(u.Source, "", true)
 	}
 
 	if u.ValidateErrorJSON != nil {
-		return json.Marshal(u.ValidateErrorJSON)
+		return utils.MarshalJSON(u.ValidateErrorJSON, "", true)
 	}
 
 	if u.InternalServerError != nil {
-		return json.Marshal(u.InternalServerError)
+		return utils.MarshalJSON(u.InternalServerError, "", true)
 	}
 
-	return nil, nil
+	return nil, errors.New("could not marshal union type: all fields are null")
 }
 
 type CreateSourceResponse struct {
+	// HTTP response content type for this operation
 	ContentType string
 	// Ok
-	CreateSource200ApplicationJSONAnyOf *CreateSource200ApplicationJSON
+	CreateSource200ApplicationJSONOneOf *CreateSource200ApplicationJSON
 	// Something went wrong
 	InternalServerError *shared.InternalServerError
-	StatusCode          int
-	RawResponse         *http.Response
+	// HTTP response status code for this operation
+	StatusCode int
+	// Raw HTTP response; suitable for custom response parsing
+	RawResponse *http.Response
 	// Conflict
 	ValidateErrorJSON *shared.ValidateErrorJSON
+}
+
+func (o *CreateSourceResponse) GetContentType() string {
+	if o == nil {
+		return ""
+	}
+	return o.ContentType
+}
+
+func (o *CreateSourceResponse) GetCreateSource200ApplicationJSONOneOf() *CreateSource200ApplicationJSON {
+	if o == nil {
+		return nil
+	}
+	return o.CreateSource200ApplicationJSONOneOf
+}
+
+func (o *CreateSourceResponse) GetInternalServerError() *shared.InternalServerError {
+	if o == nil {
+		return nil
+	}
+	return o.InternalServerError
+}
+
+func (o *CreateSourceResponse) GetStatusCode() int {
+	if o == nil {
+		return 0
+	}
+	return o.StatusCode
+}
+
+func (o *CreateSourceResponse) GetRawResponse() *http.Response {
+	if o == nil {
+		return nil
+	}
+	return o.RawResponse
+}
+
+func (o *CreateSourceResponse) GetValidateErrorJSON() *shared.ValidateErrorJSON {
+	if o == nil {
+		return nil
+	}
+	return o.ValidateErrorJSON
 }

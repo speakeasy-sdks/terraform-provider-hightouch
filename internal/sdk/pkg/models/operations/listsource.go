@@ -6,12 +6,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"hightouch/internal/sdk/pkg/models/shared"
+	"hightouch/internal/sdk/pkg/utils"
 	"net/http"
 )
-
-type ListSourceSecurity struct {
-	BearerAuth string `security:"scheme,type=http,subtype=bearer,name=Authorization"`
-}
 
 // ListSourceOrderBy - specify the order
 type ListSourceOrderBy string
@@ -52,15 +49,61 @@ func (e *ListSourceOrderBy) UnmarshalJSON(data []byte) error {
 
 type ListSourceRequest struct {
 	// limit the number of objects returned (default is 100)
-	Limit *float64 `queryParam:"style=form,explode=true,name=limit"`
+	Limit *float64 `default:"100" queryParam:"style=form,explode=true,name=limit"`
 	// filter based on name
 	Name *string `queryParam:"style=form,explode=true,name=name"`
 	// set the offset on results (for pagination)
-	Offset *float64 `queryParam:"style=form,explode=true,name=offset"`
+	Offset *float64 `default:"0" queryParam:"style=form,explode=true,name=offset"`
 	// specify the order
-	OrderBy *ListSourceOrderBy `queryParam:"style=form,explode=true,name=orderBy"`
+	OrderBy *ListSourceOrderBy `default:"id" queryParam:"style=form,explode=true,name=orderBy"`
 	// filter based on slug
 	Slug *string `queryParam:"style=form,explode=true,name=slug"`
+}
+
+func (l ListSourceRequest) MarshalJSON() ([]byte, error) {
+	return utils.MarshalJSON(l, "", false)
+}
+
+func (l *ListSourceRequest) UnmarshalJSON(data []byte) error {
+	if err := utils.UnmarshalJSON(data, &l, "", false, false); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (o *ListSourceRequest) GetLimit() *float64 {
+	if o == nil {
+		return nil
+	}
+	return o.Limit
+}
+
+func (o *ListSourceRequest) GetName() *string {
+	if o == nil {
+		return nil
+	}
+	return o.Name
+}
+
+func (o *ListSourceRequest) GetOffset() *float64 {
+	if o == nil {
+		return nil
+	}
+	return o.Offset
+}
+
+func (o *ListSourceRequest) GetOrderBy() *ListSourceOrderBy {
+	if o == nil {
+		return nil
+	}
+	return o.OrderBy
+}
+
+func (o *ListSourceRequest) GetSlug() *string {
+	if o == nil {
+		return nil
+	}
+	return o.Slug
 }
 
 // ListSource200ApplicationJSON - Ok
@@ -68,10 +111,48 @@ type ListSource200ApplicationJSON struct {
 	Data []shared.Source `json:"data"`
 }
 
+func (o *ListSource200ApplicationJSON) GetData() []shared.Source {
+	if o == nil {
+		return []shared.Source{}
+	}
+	return o.Data
+}
+
 type ListSourceResponse struct {
+	// HTTP response content type for this operation
 	ContentType string
 	// Ok
 	ListSource200ApplicationJSONObject *ListSource200ApplicationJSON
-	StatusCode                         int
-	RawResponse                        *http.Response
+	// HTTP response status code for this operation
+	StatusCode int
+	// Raw HTTP response; suitable for custom response parsing
+	RawResponse *http.Response
+}
+
+func (o *ListSourceResponse) GetContentType() string {
+	if o == nil {
+		return ""
+	}
+	return o.ContentType
+}
+
+func (o *ListSourceResponse) GetListSource200ApplicationJSONObject() *ListSource200ApplicationJSON {
+	if o == nil {
+		return nil
+	}
+	return o.ListSource200ApplicationJSONObject
+}
+
+func (o *ListSourceResponse) GetStatusCode() int {
+	if o == nil {
+		return 0
+	}
+	return o.StatusCode
+}
+
+func (o *ListSourceResponse) GetRawResponse() *http.Response {
+	if o == nil {
+		return nil
+	}
+	return o.RawResponse
 }

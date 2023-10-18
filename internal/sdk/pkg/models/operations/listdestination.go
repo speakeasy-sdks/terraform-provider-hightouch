@@ -6,12 +6,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"hightouch/internal/sdk/pkg/models/shared"
+	"hightouch/internal/sdk/pkg/utils"
 	"net/http"
 )
-
-type ListDestinationSecurity struct {
-	BearerAuth string `security:"scheme,type=http,subtype=bearer,name=Authorization"`
-}
 
 // ListDestinationOrderBy - Order the returned destinations
 type ListDestinationOrderBy string
@@ -52,15 +49,61 @@ func (e *ListDestinationOrderBy) UnmarshalJSON(data []byte) error {
 
 type ListDestinationRequest struct {
 	// limit the number of objects returned (default is 100)
-	Limit *float64 `queryParam:"style=form,explode=true,name=limit"`
+	Limit *float64 `default:"100" queryParam:"style=form,explode=true,name=limit"`
 	// Filter based on the destination's name
 	Name *string `queryParam:"style=form,explode=true,name=name"`
 	// set the offset on results (for pagination)
-	Offset *float64 `queryParam:"style=form,explode=true,name=offset"`
+	Offset *float64 `default:"0" queryParam:"style=form,explode=true,name=offset"`
 	// Order the returned destinations
-	OrderBy *ListDestinationOrderBy `queryParam:"style=form,explode=true,name=orderBy"`
+	OrderBy *ListDestinationOrderBy `default:"id" queryParam:"style=form,explode=true,name=orderBy"`
 	// Filter based on destination's slug
 	Slug *string `queryParam:"style=form,explode=true,name=slug"`
+}
+
+func (l ListDestinationRequest) MarshalJSON() ([]byte, error) {
+	return utils.MarshalJSON(l, "", false)
+}
+
+func (l *ListDestinationRequest) UnmarshalJSON(data []byte) error {
+	if err := utils.UnmarshalJSON(data, &l, "", false, false); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (o *ListDestinationRequest) GetLimit() *float64 {
+	if o == nil {
+		return nil
+	}
+	return o.Limit
+}
+
+func (o *ListDestinationRequest) GetName() *string {
+	if o == nil {
+		return nil
+	}
+	return o.Name
+}
+
+func (o *ListDestinationRequest) GetOffset() *float64 {
+	if o == nil {
+		return nil
+	}
+	return o.Offset
+}
+
+func (o *ListDestinationRequest) GetOrderBy() *ListDestinationOrderBy {
+	if o == nil {
+		return nil
+	}
+	return o.OrderBy
+}
+
+func (o *ListDestinationRequest) GetSlug() *string {
+	if o == nil {
+		return nil
+	}
+	return o.Slug
 }
 
 // ListDestination200ApplicationJSON - Ok
@@ -68,12 +111,57 @@ type ListDestination200ApplicationJSON struct {
 	Data []shared.Destination `json:"data"`
 }
 
+func (o *ListDestination200ApplicationJSON) GetData() []shared.Destination {
+	if o == nil {
+		return []shared.Destination{}
+	}
+	return o.Data
+}
+
 type ListDestinationResponse struct {
+	// HTTP response content type for this operation
 	ContentType string
 	// Ok
 	ListDestination200ApplicationJSONObject *ListDestination200ApplicationJSON
-	StatusCode                              int
-	RawResponse                             *http.Response
+	// HTTP response status code for this operation
+	StatusCode int
+	// Raw HTTP response; suitable for custom response parsing
+	RawResponse *http.Response
 	// Validation Failed
 	ValidateErrorJSON *shared.ValidateErrorJSON
+}
+
+func (o *ListDestinationResponse) GetContentType() string {
+	if o == nil {
+		return ""
+	}
+	return o.ContentType
+}
+
+func (o *ListDestinationResponse) GetListDestination200ApplicationJSONObject() *ListDestination200ApplicationJSON {
+	if o == nil {
+		return nil
+	}
+	return o.ListDestination200ApplicationJSONObject
+}
+
+func (o *ListDestinationResponse) GetStatusCode() int {
+	if o == nil {
+		return 0
+	}
+	return o.StatusCode
+}
+
+func (o *ListDestinationResponse) GetRawResponse() *http.Response {
+	if o == nil {
+		return nil
+	}
+	return o.RawResponse
+}
+
+func (o *ListDestinationResponse) GetValidateErrorJSON() *shared.ValidateErrorJSON {
+	if o == nil {
+		return nil
+	}
+	return o.ValidateErrorJSON
 }

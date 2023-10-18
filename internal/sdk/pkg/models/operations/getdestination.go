@@ -7,19 +7,53 @@ import (
 	"net/http"
 )
 
-type GetDestinationSecurity struct {
-	BearerAuth string `security:"scheme,type=http,subtype=bearer,name=Authorization"`
-}
-
 type GetDestinationRequest struct {
 	// The destination's ID
 	DestinationID float64 `pathParam:"style=simple,explode=false,name=destinationId"`
 }
 
+func (o *GetDestinationRequest) GetDestinationID() float64 {
+	if o == nil {
+		return 0.0
+	}
+	return o.DestinationID
+}
+
 type GetDestinationResponse struct {
+	// HTTP response content type for this operation
 	ContentType string
 	// Ok
 	Destination *shared.Destination
-	StatusCode  int
+	// HTTP response status code for this operation
+	StatusCode int
+	// Raw HTTP response; suitable for custom response parsing
 	RawResponse *http.Response
+}
+
+func (o *GetDestinationResponse) GetContentType() string {
+	if o == nil {
+		return ""
+	}
+	return o.ContentType
+}
+
+func (o *GetDestinationResponse) GetDestination() *shared.Destination {
+	if o == nil {
+		return nil
+	}
+	return o.Destination
+}
+
+func (o *GetDestinationResponse) GetStatusCode() int {
+	if o == nil {
+		return 0
+	}
+	return o.StatusCode
+}
+
+func (o *GetDestinationResponse) GetRawResponse() *http.Response {
+	if o == nil {
+		return nil
+	}
+	return o.RawResponse
 }

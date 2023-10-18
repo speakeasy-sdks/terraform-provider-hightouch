@@ -2,8 +2,30 @@
 
 package shared
 
+import (
+	"hightouch/internal/sdk/pkg/utils"
+)
+
 // TriggerRunIDGraphInput - The input of a trigger action to run IDR.
 type TriggerRunIDGraphInput struct {
 	// Whether to resync the entire Identity Graph or process incrementally.
-	FullRerun *bool `json:"fullRerun,omitempty"`
+	FullRerun *bool `default:"false" json:"fullRerun"`
+}
+
+func (t TriggerRunIDGraphInput) MarshalJSON() ([]byte, error) {
+	return utils.MarshalJSON(t, "", false)
+}
+
+func (t *TriggerRunIDGraphInput) UnmarshalJSON(data []byte) error {
+	if err := utils.UnmarshalJSON(data, &t, "", false, false); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (o *TriggerRunIDGraphInput) GetFullRerun() *bool {
+	if o == nil {
+		return nil
+	}
+	return o.FullRerun
 }

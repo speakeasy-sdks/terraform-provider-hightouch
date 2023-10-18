@@ -5,6 +5,7 @@ package provider
 import (
 	"context"
 	"hightouch/internal/sdk"
+	"hightouch/internal/sdk/pkg/models/shared"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
@@ -24,7 +25,8 @@ type HightouchProvider struct {
 
 // HightouchProviderModel describes the provider data model.
 type HightouchProviderModel struct {
-	ServerURL types.String `tfsdk:"server_url"`
+	ServerURL  types.String `tfsdk:"server_url"`
+	BearerAuth types.String `tfsdk:"bearer_auth"`
 }
 
 func (p *HightouchProvider) Metadata(ctx context.Context, req provider.MetadataRequest, resp *provider.MetadataResponse) {
@@ -40,6 +42,10 @@ func (p *HightouchProvider) Schema(ctx context.Context, req provider.SchemaReque
 				MarkdownDescription: "Server URL (defaults to https://api.hightouch.com/api/v1)",
 				Optional:            true,
 				Required:            false,
+			},
+			"bearer_auth": schema.StringAttribute{
+				Optional:  true,
+				Sensitive: true,
 			},
 		},
 	}
@@ -60,8 +66,14 @@ func (p *HightouchProvider) Configure(ctx context.Context, req provider.Configur
 		ServerURL = "https://api.hightouch.com/api/v1"
 	}
 
+	bearerAuth := data.BearerAuth.ValueString()
+	security := shared.Security{
+		BearerAuth: bearerAuth,
+	}
+
 	opts := []sdk.SDKOption{
 		sdk.WithServerURL(ServerURL),
+		sdk.WithSecurity(security),
 	}
 	client := sdk.New(opts...)
 

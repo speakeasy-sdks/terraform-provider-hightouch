@@ -6,13 +6,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"hightouch/internal/sdk/pkg/models/shared"
+	"hightouch/internal/sdk/pkg/utils"
 	"net/http"
 	"time"
 )
-
-type ListSyncRunsSecurity struct {
-	BearerAuth string `security:"scheme,type=http,subtype=bearer,name=Authorization"`
-}
 
 // ListSyncRunsOrderBy - specify the order
 type ListSyncRunsOrderBy string
@@ -54,16 +51,83 @@ type ListSyncRunsRequest struct {
 	// select sync runs that are started before certain ISO timestamp
 	Before *time.Time `queryParam:"style=form,explode=true,name=before"`
 	// limit the number of objects returned (default is 5)
-	Limit *float64 `queryParam:"style=form,explode=true,name=limit"`
+	Limit *float64 `default:"100" queryParam:"style=form,explode=true,name=limit"`
 	// set the offset on results (for pagination)
-	Offset *float64 `queryParam:"style=form,explode=true,name=offset"`
+	Offset *float64 `default:"0" queryParam:"style=form,explode=true,name=offset"`
 	// specify the order
-	OrderBy *ListSyncRunsOrderBy `queryParam:"style=form,explode=true,name=orderBy"`
+	OrderBy *ListSyncRunsOrderBy `default:"id" queryParam:"style=form,explode=true,name=orderBy"`
 	// query for specific run id
 	RunID  *float64 `queryParam:"style=form,explode=true,name=runId"`
 	SyncID float64  `pathParam:"style=simple,explode=false,name=syncId"`
 	// select sync runs that are started within last given minutes
 	Within *float64 `queryParam:"style=form,explode=true,name=within"`
+}
+
+func (l ListSyncRunsRequest) MarshalJSON() ([]byte, error) {
+	return utils.MarshalJSON(l, "", false)
+}
+
+func (l *ListSyncRunsRequest) UnmarshalJSON(data []byte) error {
+	if err := utils.UnmarshalJSON(data, &l, "", false, false); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (o *ListSyncRunsRequest) GetAfter() *time.Time {
+	if o == nil {
+		return nil
+	}
+	return o.After
+}
+
+func (o *ListSyncRunsRequest) GetBefore() *time.Time {
+	if o == nil {
+		return nil
+	}
+	return o.Before
+}
+
+func (o *ListSyncRunsRequest) GetLimit() *float64 {
+	if o == nil {
+		return nil
+	}
+	return o.Limit
+}
+
+func (o *ListSyncRunsRequest) GetOffset() *float64 {
+	if o == nil {
+		return nil
+	}
+	return o.Offset
+}
+
+func (o *ListSyncRunsRequest) GetOrderBy() *ListSyncRunsOrderBy {
+	if o == nil {
+		return nil
+	}
+	return o.OrderBy
+}
+
+func (o *ListSyncRunsRequest) GetRunID() *float64 {
+	if o == nil {
+		return nil
+	}
+	return o.RunID
+}
+
+func (o *ListSyncRunsRequest) GetSyncID() float64 {
+	if o == nil {
+		return 0.0
+	}
+	return o.SyncID
+}
+
+func (o *ListSyncRunsRequest) GetWithin() *float64 {
+	if o == nil {
+		return nil
+	}
+	return o.Within
 }
 
 // ListSyncRuns200ApplicationJSON - Ok
@@ -72,12 +136,64 @@ type ListSyncRuns200ApplicationJSON struct {
 	HasMore bool             `json:"hasMore"`
 }
 
+func (o *ListSyncRuns200ApplicationJSON) GetData() []shared.SyncRun {
+	if o == nil {
+		return []shared.SyncRun{}
+	}
+	return o.Data
+}
+
+func (o *ListSyncRuns200ApplicationJSON) GetHasMore() bool {
+	if o == nil {
+		return false
+	}
+	return o.HasMore
+}
+
 type ListSyncRunsResponse struct {
+	// HTTP response content type for this operation
 	ContentType string
 	// Ok
 	ListSyncRuns200ApplicationJSONObject *ListSyncRuns200ApplicationJSON
-	StatusCode                           int
-	RawResponse                          *http.Response
+	// HTTP response status code for this operation
+	StatusCode int
+	// Raw HTTP response; suitable for custom response parsing
+	RawResponse *http.Response
 	// Validation Failed
 	ValidateErrorJSON *shared.ValidateErrorJSON
+}
+
+func (o *ListSyncRunsResponse) GetContentType() string {
+	if o == nil {
+		return ""
+	}
+	return o.ContentType
+}
+
+func (o *ListSyncRunsResponse) GetListSyncRuns200ApplicationJSONObject() *ListSyncRuns200ApplicationJSON {
+	if o == nil {
+		return nil
+	}
+	return o.ListSyncRuns200ApplicationJSONObject
+}
+
+func (o *ListSyncRunsResponse) GetStatusCode() int {
+	if o == nil {
+		return 0
+	}
+	return o.StatusCode
+}
+
+func (o *ListSyncRunsResponse) GetRawResponse() *http.Response {
+	if o == nil {
+		return nil
+	}
+	return o.RawResponse
+}
+
+func (o *ListSyncRunsResponse) GetValidateErrorJSON() *shared.ValidateErrorJSON {
+	if o == nil {
+		return nil
+	}
+	return o.ValidateErrorJSON
 }

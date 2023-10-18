@@ -2,8 +2,14 @@
 
 package shared
 
-// TriggerRunIDGraphOutput - Ok
 type TriggerRunIDGraphOutput struct {
 	// The id of the triggered run.
 	ID string `json:"id"`
+}
+
+func (o *TriggerRunIDGraphOutput) GetID() string {
+	if o == nil {
+		return ""
+	}
+	return o.ID
 }

@@ -7,19 +7,53 @@ import (
 	"net/http"
 )
 
-type GetModelSecurity struct {
-	BearerAuth string `security:"scheme,type=http,subtype=bearer,name=Authorization"`
-}
-
 type GetModelRequest struct {
 	// The id of the model
 	ModelID float64 `pathParam:"style=simple,explode=false,name=modelId"`
 }
 
+func (o *GetModelRequest) GetModelID() float64 {
+	if o == nil {
+		return 0.0
+	}
+	return o.ModelID
+}
+
 type GetModelResponse struct {
+	// HTTP response content type for this operation
 	ContentType string
 	// Ok
-	Model       *shared.Model
-	StatusCode  int
+	Model *shared.Model
+	// HTTP response status code for this operation
+	StatusCode int
+	// Raw HTTP response; suitable for custom response parsing
 	RawResponse *http.Response
+}
+
+func (o *GetModelResponse) GetContentType() string {
+	if o == nil {
+		return ""
+	}
+	return o.ContentType
+}
+
+func (o *GetModelResponse) GetModel() *shared.Model {
+	if o == nil {
+		return nil
+	}
+	return o.Model
+}
+
+func (o *GetModelResponse) GetStatusCode() int {
+	if o == nil {
+		return 0
+	}
+	return o.StatusCode
+}
+
+func (o *GetModelResponse) GetRawResponse() *http.Response {
+	if o == nil {
+		return nil
+	}
+	return o.RawResponse
 }

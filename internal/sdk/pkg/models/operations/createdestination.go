@@ -3,16 +3,11 @@
 package operations
 
 import (
-	"bytes"
-	"encoding/json"
 	"errors"
 	"hightouch/internal/sdk/pkg/models/shared"
+	"hightouch/internal/sdk/pkg/utils"
 	"net/http"
 )
-
-type CreateDestinationSecurity struct {
-	BearerAuth string `security:"scheme,type=http,subtype=bearer,name=Authorization"`
-}
 
 type CreateDestination200ApplicationJSONType string
 
@@ -58,30 +53,23 @@ func CreateCreateDestination200ApplicationJSONInternalServerError(internalServer
 }
 
 func (u *CreateDestination200ApplicationJSON) UnmarshalJSON(data []byte) error {
-	var d *json.Decoder
-
-	destination := new(shared.Destination)
-	d = json.NewDecoder(bytes.NewReader(data))
-	d.DisallowUnknownFields()
-	if err := d.Decode(&destination); err == nil {
-		u.Destination = destination
-		u.Type = CreateDestination200ApplicationJSONTypeDestination
-		return nil
-	}
 
 	validateErrorJSON := new(shared.ValidateErrorJSON)
-	d = json.NewDecoder(bytes.NewReader(data))
-	d.DisallowUnknownFields()
-	if err := d.Decode(&validateErrorJSON); err == nil {
+	if err := utils.UnmarshalJSON(data, &validateErrorJSON, "", true, true); err == nil {
 		u.ValidateErrorJSON = validateErrorJSON
 		u.Type = CreateDestination200ApplicationJSONTypeValidateErrorJSON
 		return nil
 	}
 
+	destination := new(shared.Destination)
+	if err := utils.UnmarshalJSON(data, &destination, "", true, true); err == nil {
+		u.Destination = destination
+		u.Type = CreateDestination200ApplicationJSONTypeDestination
+		return nil
+	}
+
 	internalServerError := new(shared.InternalServerError)
-	d = json.NewDecoder(bytes.NewReader(data))
-	d.DisallowUnknownFields()
-	if err := d.Decode(&internalServerError); err == nil {
+	if err := utils.UnmarshalJSON(data, &internalServerError, "", true, true); err == nil {
 		u.InternalServerError = internalServerError
 		u.Type = CreateDestination200ApplicationJSONTypeInternalServerError
 		return nil
@@ -92,28 +80,73 @@ func (u *CreateDestination200ApplicationJSON) UnmarshalJSON(data []byte) error {
 
 func (u CreateDestination200ApplicationJSON) MarshalJSON() ([]byte, error) {
 	if u.Destination != nil {
-		return json.Marshal(u.Destination)
+		return utils.MarshalJSON(u.Destination, "", true)
 	}
 
 	if u.ValidateErrorJSON != nil {
-		return json.Marshal(u.ValidateErrorJSON)
+		return utils.MarshalJSON(u.ValidateErrorJSON, "", true)
 	}
 
 	if u.InternalServerError != nil {
-		return json.Marshal(u.InternalServerError)
+		return utils.MarshalJSON(u.InternalServerError, "", true)
 	}
 
-	return nil, nil
+	return nil, errors.New("could not marshal union type: all fields are null")
 }
 
 type CreateDestinationResponse struct {
+	// HTTP response content type for this operation
 	ContentType string
 	// Ok
-	CreateDestination200ApplicationJSONAnyOf *CreateDestination200ApplicationJSON
+	CreateDestination200ApplicationJSONOneOf *CreateDestination200ApplicationJSON
 	// Something went wrong
 	InternalServerError *shared.InternalServerError
-	StatusCode          int
-	RawResponse         *http.Response
+	// HTTP response status code for this operation
+	StatusCode int
+	// Raw HTTP response; suitable for custom response parsing
+	RawResponse *http.Response
 	// Conflict
 	ValidateErrorJSON *shared.ValidateErrorJSON
+}
+
+func (o *CreateDestinationResponse) GetContentType() string {
+	if o == nil {
+		return ""
+	}
+	return o.ContentType
+}
+
+func (o *CreateDestinationResponse) GetCreateDestination200ApplicationJSONOneOf() *CreateDestination200ApplicationJSON {
+	if o == nil {
+		return nil
+	}
+	return o.CreateDestination200ApplicationJSONOneOf
+}
+
+func (o *CreateDestinationResponse) GetInternalServerError() *shared.InternalServerError {
+	if o == nil {
+		return nil
+	}
+	return o.InternalServerError
+}
+
+func (o *CreateDestinationResponse) GetStatusCode() int {
+	if o == nil {
+		return 0
+	}
+	return o.StatusCode
+}
+
+func (o *CreateDestinationResponse) GetRawResponse() *http.Response {
+	if o == nil {
+		return nil
+	}
+	return o.RawResponse
+}
+
+func (o *CreateDestinationResponse) GetValidateErrorJSON() *shared.ValidateErrorJSON {
+	if o == nil {
+		return nil
+	}
+	return o.ValidateErrorJSON
 }

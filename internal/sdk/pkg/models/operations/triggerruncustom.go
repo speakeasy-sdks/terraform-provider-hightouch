@@ -3,16 +3,11 @@
 package operations
 
 import (
-	"bytes"
-	"encoding/json"
 	"errors"
 	"hightouch/internal/sdk/pkg/models/shared"
+	"hightouch/internal/sdk/pkg/utils"
 	"net/http"
 )
-
-type TriggerRunCustomSecurity struct {
-	BearerAuth string `security:"scheme,type=http,subtype=bearer,name=Authorization"`
-}
 
 type TriggerRunCustom200ApplicationJSONType string
 
@@ -47,21 +42,16 @@ func CreateTriggerRunCustom200ApplicationJSONValidateErrorJSON(validateErrorJSON
 }
 
 func (u *TriggerRunCustom200ApplicationJSON) UnmarshalJSON(data []byte) error {
-	var d *json.Decoder
 
 	triggerRunOutput := new(shared.TriggerRunOutput)
-	d = json.NewDecoder(bytes.NewReader(data))
-	d.DisallowUnknownFields()
-	if err := d.Decode(&triggerRunOutput); err == nil {
+	if err := utils.UnmarshalJSON(data, &triggerRunOutput, "", true, true); err == nil {
 		u.TriggerRunOutput = triggerRunOutput
 		u.Type = TriggerRunCustom200ApplicationJSONTypeTriggerRunOutput
 		return nil
 	}
 
 	validateErrorJSON := new(shared.ValidateErrorJSON)
-	d = json.NewDecoder(bytes.NewReader(data))
-	d.DisallowUnknownFields()
-	if err := d.Decode(&validateErrorJSON); err == nil {
+	if err := utils.UnmarshalJSON(data, &validateErrorJSON, "", true, true); err == nil {
 		u.ValidateErrorJSON = validateErrorJSON
 		u.Type = TriggerRunCustom200ApplicationJSONTypeValidateErrorJSON
 		return nil
@@ -72,22 +62,60 @@ func (u *TriggerRunCustom200ApplicationJSON) UnmarshalJSON(data []byte) error {
 
 func (u TriggerRunCustom200ApplicationJSON) MarshalJSON() ([]byte, error) {
 	if u.TriggerRunOutput != nil {
-		return json.Marshal(u.TriggerRunOutput)
+		return utils.MarshalJSON(u.TriggerRunOutput, "", true)
 	}
 
 	if u.ValidateErrorJSON != nil {
-		return json.Marshal(u.ValidateErrorJSON)
+		return utils.MarshalJSON(u.ValidateErrorJSON, "", true)
 	}
 
-	return nil, nil
+	return nil, errors.New("could not marshal union type: all fields are null")
 }
 
 type TriggerRunCustomResponse struct {
+	// HTTP response content type for this operation
 	ContentType string
-	StatusCode  int
+	// HTTP response status code for this operation
+	StatusCode int
+	// Raw HTTP response; suitable for custom response parsing
 	RawResponse *http.Response
 	// Ok
-	TriggerRunCustom200ApplicationJSONAnyOf *TriggerRunCustom200ApplicationJSON
+	TriggerRunCustom200ApplicationJSONOneOf *TriggerRunCustom200ApplicationJSON
 	// Validation Failed
 	ValidateErrorJSON *shared.ValidateErrorJSON
+}
+
+func (o *TriggerRunCustomResponse) GetContentType() string {
+	if o == nil {
+		return ""
+	}
+	return o.ContentType
+}
+
+func (o *TriggerRunCustomResponse) GetStatusCode() int {
+	if o == nil {
+		return 0
+	}
+	return o.StatusCode
+}
+
+func (o *TriggerRunCustomResponse) GetRawResponse() *http.Response {
+	if o == nil {
+		return nil
+	}
+	return o.RawResponse
+}
+
+func (o *TriggerRunCustomResponse) GetTriggerRunCustom200ApplicationJSONOneOf() *TriggerRunCustom200ApplicationJSON {
+	if o == nil {
+		return nil
+	}
+	return o.TriggerRunCustom200ApplicationJSONOneOf
+}
+
+func (o *TriggerRunCustomResponse) GetValidateErrorJSON() *shared.ValidateErrorJSON {
+	if o == nil {
+		return nil
+	}
+	return o.ValidateErrorJSON
 }

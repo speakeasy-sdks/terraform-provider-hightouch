@@ -3,9 +3,8 @@
 package shared
 
 import (
-	"bytes"
-	"encoding/json"
 	"errors"
+	"hightouch/internal/sdk/pkg/utils"
 )
 
 type SyncCreateScheduleScheduleType string
@@ -63,39 +62,30 @@ func CreateSyncCreateScheduleScheduleDBTSchedule(dbtSchedule DBTSchedule) SyncCr
 }
 
 func (u *SyncCreateScheduleSchedule) UnmarshalJSON(data []byte) error {
-	var d *json.Decoder
 
 	intervalSchedule := new(IntervalSchedule)
-	d = json.NewDecoder(bytes.NewReader(data))
-	d.DisallowUnknownFields()
-	if err := d.Decode(&intervalSchedule); err == nil {
+	if err := utils.UnmarshalJSON(data, &intervalSchedule, "", true, true); err == nil {
 		u.IntervalSchedule = intervalSchedule
 		u.Type = SyncCreateScheduleScheduleTypeIntervalSchedule
 		return nil
 	}
 
 	cronSchedule := new(CronSchedule)
-	d = json.NewDecoder(bytes.NewReader(data))
-	d.DisallowUnknownFields()
-	if err := d.Decode(&cronSchedule); err == nil {
+	if err := utils.UnmarshalJSON(data, &cronSchedule, "", true, true); err == nil {
 		u.CronSchedule = cronSchedule
 		u.Type = SyncCreateScheduleScheduleTypeCronSchedule
 		return nil
 	}
 
 	visualCronSchedule := new(VisualCronSchedule)
-	d = json.NewDecoder(bytes.NewReader(data))
-	d.DisallowUnknownFields()
-	if err := d.Decode(&visualCronSchedule); err == nil {
+	if err := utils.UnmarshalJSON(data, &visualCronSchedule, "", true, true); err == nil {
 		u.VisualCronSchedule = visualCronSchedule
 		u.Type = SyncCreateScheduleScheduleTypeVisualCronSchedule
 		return nil
 	}
 
 	dbtSchedule := new(DBTSchedule)
-	d = json.NewDecoder(bytes.NewReader(data))
-	d.DisallowUnknownFields()
-	if err := d.Decode(&dbtSchedule); err == nil {
+	if err := utils.UnmarshalJSON(data, &dbtSchedule, "", true, true); err == nil {
 		u.DBTSchedule = dbtSchedule
 		u.Type = SyncCreateScheduleScheduleTypeDBTSchedule
 		return nil
@@ -106,22 +96,22 @@ func (u *SyncCreateScheduleSchedule) UnmarshalJSON(data []byte) error {
 
 func (u SyncCreateScheduleSchedule) MarshalJSON() ([]byte, error) {
 	if u.IntervalSchedule != nil {
-		return json.Marshal(u.IntervalSchedule)
+		return utils.MarshalJSON(u.IntervalSchedule, "", true)
 	}
 
 	if u.CronSchedule != nil {
-		return json.Marshal(u.CronSchedule)
+		return utils.MarshalJSON(u.CronSchedule, "", true)
 	}
 
 	if u.VisualCronSchedule != nil {
-		return json.Marshal(u.VisualCronSchedule)
+		return utils.MarshalJSON(u.VisualCronSchedule, "", true)
 	}
 
 	if u.DBTSchedule != nil {
-		return json.Marshal(u.DBTSchedule)
+		return utils.MarshalJSON(u.DBTSchedule, "", true)
 	}
 
-	return nil, nil
+	return nil, errors.New("could not marshal union type: all fields are null")
 }
 
 // SyncCreateSchedule - The scheduling configuration. It can be triggerd based on several ways:
@@ -136,6 +126,20 @@ func (u SyncCreateScheduleSchedule) MarshalJSON() ([]byte, error) {
 type SyncCreateSchedule struct {
 	Schedule SyncCreateScheduleSchedule `json:"schedule"`
 	Type     string                     `json:"type"`
+}
+
+func (o *SyncCreateSchedule) GetSchedule() SyncCreateScheduleSchedule {
+	if o == nil {
+		return SyncCreateScheduleSchedule{}
+	}
+	return o.Schedule
+}
+
+func (o *SyncCreateSchedule) GetType() string {
+	if o == nil {
+		return ""
+	}
+	return o.Type
 }
 
 // SyncCreate - The input for creating a Sync
@@ -163,7 +167,49 @@ type SyncCreate struct {
 	// Visual: the sync will be trigged based a visual cron configuration on UI
 	//
 	// DBT-cloud: the sync will be trigged based on a dbt cloud job
-	Schedule SyncCreateSchedule `json:"schedule"`
+	Schedule *SyncCreateSchedule `json:"schedule"`
 	// The sync's slug
 	Slug string `json:"slug"`
+}
+
+func (o *SyncCreate) GetConfiguration() map[string]interface{} {
+	if o == nil {
+		return map[string]interface{}{}
+	}
+	return o.Configuration
+}
+
+func (o *SyncCreate) GetDestinationID() string {
+	if o == nil {
+		return ""
+	}
+	return o.DestinationID
+}
+
+func (o *SyncCreate) GetDisabled() bool {
+	if o == nil {
+		return false
+	}
+	return o.Disabled
+}
+
+func (o *SyncCreate) GetModelID() string {
+	if o == nil {
+		return ""
+	}
+	return o.ModelID
+}
+
+func (o *SyncCreate) GetSchedule() *SyncCreateSchedule {
+	if o == nil {
+		return nil
+	}
+	return o.Schedule
+}
+
+func (o *SyncCreate) GetSlug() string {
+	if o == nil {
+		return ""
+	}
+	return o.Slug
 }

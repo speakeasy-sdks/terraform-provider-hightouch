@@ -3,9 +3,8 @@
 package shared
 
 import (
-	"bytes"
-	"encoding/json"
 	"errors"
+	"hightouch/internal/sdk/pkg/utils"
 	"time"
 )
 
@@ -64,39 +63,30 @@ func CreateSyncScheduleScheduleDBTSchedule(dbtSchedule DBTSchedule) SyncSchedule
 }
 
 func (u *SyncScheduleSchedule) UnmarshalJSON(data []byte) error {
-	var d *json.Decoder
 
 	intervalSchedule := new(IntervalSchedule)
-	d = json.NewDecoder(bytes.NewReader(data))
-	d.DisallowUnknownFields()
-	if err := d.Decode(&intervalSchedule); err == nil {
+	if err := utils.UnmarshalJSON(data, &intervalSchedule, "", true, true); err == nil {
 		u.IntervalSchedule = intervalSchedule
 		u.Type = SyncScheduleScheduleTypeIntervalSchedule
 		return nil
 	}
 
 	cronSchedule := new(CronSchedule)
-	d = json.NewDecoder(bytes.NewReader(data))
-	d.DisallowUnknownFields()
-	if err := d.Decode(&cronSchedule); err == nil {
+	if err := utils.UnmarshalJSON(data, &cronSchedule, "", true, true); err == nil {
 		u.CronSchedule = cronSchedule
 		u.Type = SyncScheduleScheduleTypeCronSchedule
 		return nil
 	}
 
 	visualCronSchedule := new(VisualCronSchedule)
-	d = json.NewDecoder(bytes.NewReader(data))
-	d.DisallowUnknownFields()
-	if err := d.Decode(&visualCronSchedule); err == nil {
+	if err := utils.UnmarshalJSON(data, &visualCronSchedule, "", true, true); err == nil {
 		u.VisualCronSchedule = visualCronSchedule
 		u.Type = SyncScheduleScheduleTypeVisualCronSchedule
 		return nil
 	}
 
 	dbtSchedule := new(DBTSchedule)
-	d = json.NewDecoder(bytes.NewReader(data))
-	d.DisallowUnknownFields()
-	if err := d.Decode(&dbtSchedule); err == nil {
+	if err := utils.UnmarshalJSON(data, &dbtSchedule, "", true, true); err == nil {
 		u.DBTSchedule = dbtSchedule
 		u.Type = SyncScheduleScheduleTypeDBTSchedule
 		return nil
@@ -107,22 +97,22 @@ func (u *SyncScheduleSchedule) UnmarshalJSON(data []byte) error {
 
 func (u SyncScheduleSchedule) MarshalJSON() ([]byte, error) {
 	if u.IntervalSchedule != nil {
-		return json.Marshal(u.IntervalSchedule)
+		return utils.MarshalJSON(u.IntervalSchedule, "", true)
 	}
 
 	if u.CronSchedule != nil {
-		return json.Marshal(u.CronSchedule)
+		return utils.MarshalJSON(u.CronSchedule, "", true)
 	}
 
 	if u.VisualCronSchedule != nil {
-		return json.Marshal(u.VisualCronSchedule)
+		return utils.MarshalJSON(u.VisualCronSchedule, "", true)
 	}
 
 	if u.DBTSchedule != nil {
-		return json.Marshal(u.DBTSchedule)
+		return utils.MarshalJSON(u.DBTSchedule, "", true)
 	}
 
-	return nil, nil
+	return nil, errors.New("could not marshal union type: all fields are null")
 }
 
 // SyncSchedule - The scheduling configuration. It can be triggerd based on several ways:
@@ -137,6 +127,20 @@ func (u SyncScheduleSchedule) MarshalJSON() ([]byte, error) {
 type SyncSchedule struct {
 	Schedule SyncScheduleSchedule `json:"schedule"`
 	Type     string               `json:"type"`
+}
+
+func (o *SyncSchedule) GetSchedule() SyncScheduleSchedule {
+	if o == nil {
+		return SyncScheduleSchedule{}
+	}
+	return o.Schedule
+}
+
+func (o *SyncSchedule) GetType() string {
+	if o == nil {
+		return ""
+	}
+	return o.Type
 }
 
 // Sync - Syncs define how data from models are mapped to destinations. Each time a
@@ -160,7 +164,7 @@ type Sync struct {
 	// The sync's id
 	ID string `json:"id"`
 	// The timestamp of the last sync run
-	LastRunAt time.Time `json:"lastRunAt"`
+	LastRunAt *time.Time `json:"lastRunAt"`
 	// The id of the Model that sync is connected to
 	ModelID string `json:"modelId"`
 	// The primary key that sync uses to identify data from source
@@ -176,7 +180,7 @@ type Sync struct {
 	// Visual: the sync will be trigged based a visual cron configuration on UI
 	//
 	// DBT-cloud: the sync will be trigged based on a dbt cloud job
-	Schedule SyncSchedule `json:"schedule"`
+	Schedule *SyncSchedule `json:"schedule"`
 	// The sync's slug
 	Slug string `json:"slug"`
 	// SyncStatus
@@ -185,4 +189,113 @@ type Sync struct {
 	UpdatedAt time.Time `json:"updatedAt"`
 	// The id of the workspace that the sync belongs to
 	WorkspaceID string `json:"workspaceId"`
+}
+
+func (s Sync) MarshalJSON() ([]byte, error) {
+	return utils.MarshalJSON(s, "", false)
+}
+
+func (s *Sync) UnmarshalJSON(data []byte) error {
+	if err := utils.UnmarshalJSON(data, &s, "", false, true); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (o *Sync) GetConfiguration() map[string]interface{} {
+	if o == nil {
+		return map[string]interface{}{}
+	}
+	return o.Configuration
+}
+
+func (o *Sync) GetCreatedAt() time.Time {
+	if o == nil {
+		return time.Time{}
+	}
+	return o.CreatedAt
+}
+
+func (o *Sync) GetDestinationID() string {
+	if o == nil {
+		return ""
+	}
+	return o.DestinationID
+}
+
+func (o *Sync) GetDisabled() bool {
+	if o == nil {
+		return false
+	}
+	return o.Disabled
+}
+
+func (o *Sync) GetID() string {
+	if o == nil {
+		return ""
+	}
+	return o.ID
+}
+
+func (o *Sync) GetLastRunAt() *time.Time {
+	if o == nil {
+		return nil
+	}
+	return o.LastRunAt
+}
+
+func (o *Sync) GetModelID() string {
+	if o == nil {
+		return ""
+	}
+	return o.ModelID
+}
+
+func (o *Sync) GetPrimaryKey() string {
+	if o == nil {
+		return ""
+	}
+	return o.PrimaryKey
+}
+
+func (o *Sync) GetReferencedColumns() []string {
+	if o == nil {
+		return []string{}
+	}
+	return o.ReferencedColumns
+}
+
+func (o *Sync) GetSchedule() *SyncSchedule {
+	if o == nil {
+		return nil
+	}
+	return o.Schedule
+}
+
+func (o *Sync) GetSlug() string {
+	if o == nil {
+		return ""
+	}
+	return o.Slug
+}
+
+func (o *Sync) GetStatus() SyncStatus {
+	if o == nil {
+		return SyncStatus("")
+	}
+	return o.Status
+}
+
+func (o *Sync) GetUpdatedAt() time.Time {
+	if o == nil {
+		return time.Time{}
+	}
+	return o.UpdatedAt
+}
+
+func (o *Sync) GetWorkspaceID() string {
+	if o == nil {
+		return ""
+	}
+	return o.WorkspaceID
 }

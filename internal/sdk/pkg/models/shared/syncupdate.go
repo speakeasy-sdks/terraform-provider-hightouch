@@ -3,9 +3,8 @@
 package shared
 
 import (
-	"bytes"
-	"encoding/json"
 	"errors"
+	"hightouch/internal/sdk/pkg/utils"
 )
 
 type SyncUpdateScheduleScheduleType string
@@ -63,39 +62,30 @@ func CreateSyncUpdateScheduleScheduleDBTSchedule(dbtSchedule DBTSchedule) SyncUp
 }
 
 func (u *SyncUpdateScheduleSchedule) UnmarshalJSON(data []byte) error {
-	var d *json.Decoder
 
 	intervalSchedule := new(IntervalSchedule)
-	d = json.NewDecoder(bytes.NewReader(data))
-	d.DisallowUnknownFields()
-	if err := d.Decode(&intervalSchedule); err == nil {
+	if err := utils.UnmarshalJSON(data, &intervalSchedule, "", true, true); err == nil {
 		u.IntervalSchedule = intervalSchedule
 		u.Type = SyncUpdateScheduleScheduleTypeIntervalSchedule
 		return nil
 	}
 
 	cronSchedule := new(CronSchedule)
-	d = json.NewDecoder(bytes.NewReader(data))
-	d.DisallowUnknownFields()
-	if err := d.Decode(&cronSchedule); err == nil {
+	if err := utils.UnmarshalJSON(data, &cronSchedule, "", true, true); err == nil {
 		u.CronSchedule = cronSchedule
 		u.Type = SyncUpdateScheduleScheduleTypeCronSchedule
 		return nil
 	}
 
 	visualCronSchedule := new(VisualCronSchedule)
-	d = json.NewDecoder(bytes.NewReader(data))
-	d.DisallowUnknownFields()
-	if err := d.Decode(&visualCronSchedule); err == nil {
+	if err := utils.UnmarshalJSON(data, &visualCronSchedule, "", true, true); err == nil {
 		u.VisualCronSchedule = visualCronSchedule
 		u.Type = SyncUpdateScheduleScheduleTypeVisualCronSchedule
 		return nil
 	}
 
 	dbtSchedule := new(DBTSchedule)
-	d = json.NewDecoder(bytes.NewReader(data))
-	d.DisallowUnknownFields()
-	if err := d.Decode(&dbtSchedule); err == nil {
+	if err := utils.UnmarshalJSON(data, &dbtSchedule, "", true, true); err == nil {
 		u.DBTSchedule = dbtSchedule
 		u.Type = SyncUpdateScheduleScheduleTypeDBTSchedule
 		return nil
@@ -106,22 +96,22 @@ func (u *SyncUpdateScheduleSchedule) UnmarshalJSON(data []byte) error {
 
 func (u SyncUpdateScheduleSchedule) MarshalJSON() ([]byte, error) {
 	if u.IntervalSchedule != nil {
-		return json.Marshal(u.IntervalSchedule)
+		return utils.MarshalJSON(u.IntervalSchedule, "", true)
 	}
 
 	if u.CronSchedule != nil {
-		return json.Marshal(u.CronSchedule)
+		return utils.MarshalJSON(u.CronSchedule, "", true)
 	}
 
 	if u.VisualCronSchedule != nil {
-		return json.Marshal(u.VisualCronSchedule)
+		return utils.MarshalJSON(u.VisualCronSchedule, "", true)
 	}
 
 	if u.DBTSchedule != nil {
-		return json.Marshal(u.DBTSchedule)
+		return utils.MarshalJSON(u.DBTSchedule, "", true)
 	}
 
-	return nil, nil
+	return nil, errors.New("could not marshal union type: all fields are null")
 }
 
 // SyncUpdateSchedule - The scheduling configuration. It can be triggerd based on several ways:
@@ -136,6 +126,20 @@ func (u SyncUpdateScheduleSchedule) MarshalJSON() ([]byte, error) {
 type SyncUpdateSchedule struct {
 	Schedule SyncUpdateScheduleSchedule `json:"schedule"`
 	Type     string                     `json:"type"`
+}
+
+func (o *SyncUpdateSchedule) GetSchedule() SyncUpdateScheduleSchedule {
+	if o == nil {
+		return SyncUpdateScheduleSchedule{}
+	}
+	return o.Schedule
+}
+
+func (o *SyncUpdateSchedule) GetType() string {
+	if o == nil {
+		return ""
+	}
+	return o.Type
 }
 
 // SyncUpdate - The input for updating a Sync
@@ -160,4 +164,25 @@ type SyncUpdate struct {
 	//
 	// DBT-cloud: the sync will be trigged based on a dbt cloud job
 	Schedule *SyncUpdateSchedule `json:"schedule,omitempty"`
+}
+
+func (o *SyncUpdate) GetConfiguration() map[string]interface{} {
+	if o == nil {
+		return nil
+	}
+	return o.Configuration
+}
+
+func (o *SyncUpdate) GetDisabled() *bool {
+	if o == nil {
+		return nil
+	}
+	return o.Disabled
+}
+
+func (o *SyncUpdate) GetSchedule() *SyncUpdateSchedule {
+	if o == nil {
+		return nil
+	}
+	return o.Schedule
 }
