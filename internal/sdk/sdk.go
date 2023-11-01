@@ -143,9 +143,9 @@ func New(opts ...SDKOption) *Hightouch {
 		sdkConfiguration: sdkConfiguration{
 			Language:          "go",
 			OpenAPIDocVersion: "1.0.0",
-			SDKVersion:        "1.9.0",
-			GenVersion:        "2.161.0",
-			UserAgent:         "speakeasy-sdk/go 1.9.0 2.161.0 1.0.0 hightouch",
+			SDKVersion:        "1.10.0",
+			GenVersion:        "2.173.0",
+			UserAgent:         "speakeasy-sdk/go 1.10.0 2.173.0 1.0.0 hightouch",
 		},
 	}
 	for _, opt := range opts {
