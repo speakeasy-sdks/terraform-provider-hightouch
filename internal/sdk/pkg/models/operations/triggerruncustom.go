@@ -4,63 +4,63 @@ package operations
 
 import (
 	"errors"
-	"hightouch/internal/sdk/pkg/models/shared"
-	"hightouch/internal/sdk/pkg/utils"
+	"hightouch/v2/internal/sdk/pkg/models/shared"
+	"hightouch/v2/internal/sdk/pkg/utils"
 	"net/http"
 )
 
-type TriggerRunCustom200ApplicationJSONType string
+type TriggerRunCustomResponseBodyType string
 
 const (
-	TriggerRunCustom200ApplicationJSONTypeTriggerRunOutput  TriggerRunCustom200ApplicationJSONType = "TriggerRunOutput"
-	TriggerRunCustom200ApplicationJSONTypeValidateErrorJSON TriggerRunCustom200ApplicationJSONType = "ValidateErrorJSON"
+	TriggerRunCustomResponseBodyTypeTriggerRunOutput  TriggerRunCustomResponseBodyType = "TriggerRunOutput"
+	TriggerRunCustomResponseBodyTypeValidateErrorJSON TriggerRunCustomResponseBodyType = "ValidateErrorJSON"
 )
 
-type TriggerRunCustom200ApplicationJSON struct {
+type TriggerRunCustomResponseBody struct {
 	TriggerRunOutput  *shared.TriggerRunOutput
 	ValidateErrorJSON *shared.ValidateErrorJSON
 
-	Type TriggerRunCustom200ApplicationJSONType
+	Type TriggerRunCustomResponseBodyType
 }
 
-func CreateTriggerRunCustom200ApplicationJSONTriggerRunOutput(triggerRunOutput shared.TriggerRunOutput) TriggerRunCustom200ApplicationJSON {
-	typ := TriggerRunCustom200ApplicationJSONTypeTriggerRunOutput
+func CreateTriggerRunCustomResponseBodyTriggerRunOutput(triggerRunOutput shared.TriggerRunOutput) TriggerRunCustomResponseBody {
+	typ := TriggerRunCustomResponseBodyTypeTriggerRunOutput
 
-	return TriggerRunCustom200ApplicationJSON{
+	return TriggerRunCustomResponseBody{
 		TriggerRunOutput: &triggerRunOutput,
 		Type:             typ,
 	}
 }
 
-func CreateTriggerRunCustom200ApplicationJSONValidateErrorJSON(validateErrorJSON shared.ValidateErrorJSON) TriggerRunCustom200ApplicationJSON {
-	typ := TriggerRunCustom200ApplicationJSONTypeValidateErrorJSON
+func CreateTriggerRunCustomResponseBodyValidateErrorJSON(validateErrorJSON shared.ValidateErrorJSON) TriggerRunCustomResponseBody {
+	typ := TriggerRunCustomResponseBodyTypeValidateErrorJSON
 
-	return TriggerRunCustom200ApplicationJSON{
+	return TriggerRunCustomResponseBody{
 		ValidateErrorJSON: &validateErrorJSON,
 		Type:              typ,
 	}
 }
 
-func (u *TriggerRunCustom200ApplicationJSON) UnmarshalJSON(data []byte) error {
+func (u *TriggerRunCustomResponseBody) UnmarshalJSON(data []byte) error {
 
 	triggerRunOutput := new(shared.TriggerRunOutput)
 	if err := utils.UnmarshalJSON(data, &triggerRunOutput, "", true, true); err == nil {
 		u.TriggerRunOutput = triggerRunOutput
-		u.Type = TriggerRunCustom200ApplicationJSONTypeTriggerRunOutput
+		u.Type = TriggerRunCustomResponseBodyTypeTriggerRunOutput
 		return nil
 	}
 
 	validateErrorJSON := new(shared.ValidateErrorJSON)
 	if err := utils.UnmarshalJSON(data, &validateErrorJSON, "", true, true); err == nil {
 		u.ValidateErrorJSON = validateErrorJSON
-		u.Type = TriggerRunCustom200ApplicationJSONTypeValidateErrorJSON
+		u.Type = TriggerRunCustomResponseBodyTypeValidateErrorJSON
 		return nil
 	}
 
 	return errors.New("could not unmarshal into supported union types")
 }
 
-func (u TriggerRunCustom200ApplicationJSON) MarshalJSON() ([]byte, error) {
+func (u TriggerRunCustomResponseBody) MarshalJSON() ([]byte, error) {
 	if u.TriggerRunOutput != nil {
 		return utils.MarshalJSON(u.TriggerRunOutput, "", true)
 	}
@@ -79,10 +79,10 @@ type TriggerRunCustomResponse struct {
 	StatusCode int
 	// Raw HTTP response; suitable for custom response parsing
 	RawResponse *http.Response
-	// Ok
-	TriggerRunCustom200ApplicationJSONOneOf *TriggerRunCustom200ApplicationJSON
 	// Validation Failed
 	ValidateErrorJSON *shared.ValidateErrorJSON
+	// Ok
+	OneOf *TriggerRunCustomResponseBody
 }
 
 func (o *TriggerRunCustomResponse) GetContentType() string {
@@ -106,16 +106,16 @@ func (o *TriggerRunCustomResponse) GetRawResponse() *http.Response {
 	return o.RawResponse
 }
 
-func (o *TriggerRunCustomResponse) GetTriggerRunCustom200ApplicationJSONOneOf() *TriggerRunCustom200ApplicationJSON {
-	if o == nil {
-		return nil
-	}
-	return o.TriggerRunCustom200ApplicationJSONOneOf
-}
-
 func (o *TriggerRunCustomResponse) GetValidateErrorJSON() *shared.ValidateErrorJSON {
 	if o == nil {
 		return nil
 	}
 	return o.ValidateErrorJSON
+}
+
+func (o *TriggerRunCustomResponse) GetOneOf() *TriggerRunCustomResponseBody {
+	if o == nil {
+		return nil
+	}
+	return o.OneOf
 }

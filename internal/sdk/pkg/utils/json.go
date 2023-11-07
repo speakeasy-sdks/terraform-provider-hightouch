@@ -12,7 +12,7 @@ import (
 	"time"
 	"unsafe"
 
-	"hightouch/internal/sdk/pkg/types"
+	"hightouch/v2/internal/sdk/pkg/types"
 
 	"github.com/ericlagergren/decimal"
 )

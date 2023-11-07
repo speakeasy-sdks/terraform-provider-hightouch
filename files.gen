@@ -70,9 +70,9 @@ internal/sdk/pkg/models/operations/updatedestination.go
 internal/sdk/pkg/models/operations/updatemodel.go
 internal/sdk/pkg/models/operations/updatesource.go
 internal/sdk/pkg/models/operations/updatesync.go
+internal/sdk/pkg/models/shared/destination.go
 internal/sdk/pkg/models/shared/validateerrorjson.go
 internal/sdk/pkg/models/shared/internalservererror.go
-internal/sdk/pkg/models/shared/destination.go
 internal/sdk/pkg/models/shared/destinationcreate.go
 internal/sdk/pkg/models/shared/model.go
 internal/sdk/pkg/models/shared/modelcreate.go

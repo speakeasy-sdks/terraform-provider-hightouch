@@ -11,7 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
-	tfReflect "hightouch/internal/provider/reflect"
+	tfReflect "hightouch/v2/internal/provider/reflect"
 	"net/http"
 	"net/http/httputil"
 	"reflect"

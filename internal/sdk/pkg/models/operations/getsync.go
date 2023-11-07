@@ -3,7 +3,7 @@
 package operations
 
 import (
-	"hightouch/internal/sdk/pkg/models/shared"
+	"hightouch/v2/internal/sdk/pkg/models/shared"
 	"net/http"
 )
 

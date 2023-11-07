@@ -4,81 +4,81 @@ package operations
 
 import (
 	"errors"
-	"hightouch/internal/sdk/pkg/models/shared"
-	"hightouch/internal/sdk/pkg/utils"
+	"hightouch/v2/internal/sdk/pkg/models/shared"
+	"hightouch/v2/internal/sdk/pkg/utils"
 	"net/http"
 )
 
-type CreateSync200ApplicationJSONType string
+type CreateSyncResponseBodyType string
 
 const (
-	CreateSync200ApplicationJSONTypeSync                CreateSync200ApplicationJSONType = "Sync"
-	CreateSync200ApplicationJSONTypeValidateErrorJSON   CreateSync200ApplicationJSONType = "ValidateErrorJSON"
-	CreateSync200ApplicationJSONTypeInternalServerError CreateSync200ApplicationJSONType = "InternalServerError"
+	CreateSyncResponseBodyTypeSync                CreateSyncResponseBodyType = "Sync"
+	CreateSyncResponseBodyTypeValidateErrorJSON   CreateSyncResponseBodyType = "ValidateErrorJSON"
+	CreateSyncResponseBodyTypeInternalServerError CreateSyncResponseBodyType = "InternalServerError"
 )
 
-type CreateSync200ApplicationJSON struct {
+type CreateSyncResponseBody struct {
 	Sync                *shared.Sync
 	ValidateErrorJSON   *shared.ValidateErrorJSON
 	InternalServerError *shared.InternalServerError
 
-	Type CreateSync200ApplicationJSONType
+	Type CreateSyncResponseBodyType
 }
 
-func CreateCreateSync200ApplicationJSONSync(sync shared.Sync) CreateSync200ApplicationJSON {
-	typ := CreateSync200ApplicationJSONTypeSync
+func CreateCreateSyncResponseBodySync(sync shared.Sync) CreateSyncResponseBody {
+	typ := CreateSyncResponseBodyTypeSync
 
-	return CreateSync200ApplicationJSON{
+	return CreateSyncResponseBody{
 		Sync: &sync,
 		Type: typ,
 	}
 }
 
-func CreateCreateSync200ApplicationJSONValidateErrorJSON(validateErrorJSON shared.ValidateErrorJSON) CreateSync200ApplicationJSON {
-	typ := CreateSync200ApplicationJSONTypeValidateErrorJSON
+func CreateCreateSyncResponseBodyValidateErrorJSON(validateErrorJSON shared.ValidateErrorJSON) CreateSyncResponseBody {
+	typ := CreateSyncResponseBodyTypeValidateErrorJSON
 
-	return CreateSync200ApplicationJSON{
+	return CreateSyncResponseBody{
 		ValidateErrorJSON: &validateErrorJSON,
 		Type:              typ,
 	}
 }
 
-func CreateCreateSync200ApplicationJSONInternalServerError(internalServerError shared.InternalServerError) CreateSync200ApplicationJSON {
-	typ := CreateSync200ApplicationJSONTypeInternalServerError
+func CreateCreateSyncResponseBodyInternalServerError(internalServerError shared.InternalServerError) CreateSyncResponseBody {
+	typ := CreateSyncResponseBodyTypeInternalServerError
 
-	return CreateSync200ApplicationJSON{
+	return CreateSyncResponseBody{
 		InternalServerError: &internalServerError,
 		Type:                typ,
 	}
 }
 
-func (u *CreateSync200ApplicationJSON) UnmarshalJSON(data []byte) error {
+func (u *CreateSyncResponseBody) UnmarshalJSON(data []byte) error {
 
 	validateErrorJSON := new(shared.ValidateErrorJSON)
 	if err := utils.UnmarshalJSON(data, &validateErrorJSON, "", true, true); err == nil {
 		u.ValidateErrorJSON = validateErrorJSON
-		u.Type = CreateSync200ApplicationJSONTypeValidateErrorJSON
+		u.Type = CreateSyncResponseBodyTypeValidateErrorJSON
 		return nil
 	}
 
 	sync := new(shared.Sync)
 	if err := utils.UnmarshalJSON(data, &sync, "", true, true); err == nil {
 		u.Sync = sync
-		u.Type = CreateSync200ApplicationJSONTypeSync
+		u.Type = CreateSyncResponseBodyTypeSync
 		return nil
 	}
 
 	internalServerError := new(shared.InternalServerError)
 	if err := utils.UnmarshalJSON(data, &internalServerError, "", true, true); err == nil {
 		u.InternalServerError = internalServerError
-		u.Type = CreateSync200ApplicationJSONTypeInternalServerError
+		u.Type = CreateSyncResponseBodyTypeInternalServerError
 		return nil
 	}
 
 	return errors.New("could not unmarshal into supported union types")
 }
 
-func (u CreateSync200ApplicationJSON) MarshalJSON() ([]byte, error) {
+func (u CreateSyncResponseBody) MarshalJSON() ([]byte, error) {
 	if u.Sync != nil {
 		return utils.MarshalJSON(u.Sync, "", true)
 	}
@@ -97,8 +97,6 @@ func (u CreateSync200ApplicationJSON) MarshalJSON() ([]byte, error) {
 type CreateSyncResponse struct {
 	// HTTP response content type for this operation
 	ContentType string
-	// Ok
-	CreateSync200ApplicationJSONOneOf *CreateSync200ApplicationJSON
 	// Something went wrong
 	InternalServerError *shared.InternalServerError
 	// HTTP response status code for this operation
@@ -107,6 +105,8 @@ type CreateSyncResponse struct {
 	RawResponse *http.Response
 	// Conflict
 	ValidateErrorJSON *shared.ValidateErrorJSON
+	// Ok
+	OneOf *CreateSyncResponseBody
 }
 
 func (o *CreateSyncResponse) GetContentType() string {
@@ -114,13 +114,6 @@ func (o *CreateSyncResponse) GetContentType() string {
 		return ""
 	}
 	return o.ContentType
-}
-
-func (o *CreateSyncResponse) GetCreateSync200ApplicationJSONOneOf() *CreateSync200ApplicationJSON {
-	if o == nil {
-		return nil
-	}
-	return o.CreateSync200ApplicationJSONOneOf
 }
 
 func (o *CreateSyncResponse) GetInternalServerError() *shared.InternalServerError {
@@ -149,4 +142,11 @@ func (o *CreateSyncResponse) GetValidateErrorJSON() *shared.ValidateErrorJSON {
 		return nil
 	}
 	return o.ValidateErrorJSON
+}
+
+func (o *CreateSyncResponse) GetOneOf() *CreateSyncResponseBody {
+	if o == nil {
+		return nil
+	}
+	return o.OneOf
 }

@@ -4,8 +4,8 @@ package operations
 
 import (
 	"errors"
-	"hightouch/internal/sdk/pkg/models/shared"
-	"hightouch/internal/sdk/pkg/utils"
+	"hightouch/v2/internal/sdk/pkg/models/shared"
+	"hightouch/v2/internal/sdk/pkg/utils"
 	"net/http"
 )
 
@@ -29,76 +29,76 @@ func (o *UpdateSyncRequest) GetSyncID() float64 {
 	return o.SyncID
 }
 
-type UpdateSync200ApplicationJSONType string
+type UpdateSyncResponseBodyType string
 
 const (
-	UpdateSync200ApplicationJSONTypeSync                UpdateSync200ApplicationJSONType = "Sync"
-	UpdateSync200ApplicationJSONTypeValidateErrorJSON   UpdateSync200ApplicationJSONType = "ValidateErrorJSON"
-	UpdateSync200ApplicationJSONTypeInternalServerError UpdateSync200ApplicationJSONType = "InternalServerError"
+	UpdateSyncResponseBodyTypeSync                UpdateSyncResponseBodyType = "Sync"
+	UpdateSyncResponseBodyTypeValidateErrorJSON   UpdateSyncResponseBodyType = "ValidateErrorJSON"
+	UpdateSyncResponseBodyTypeInternalServerError UpdateSyncResponseBodyType = "InternalServerError"
 )
 
-type UpdateSync200ApplicationJSON struct {
+type UpdateSyncResponseBody struct {
 	Sync                *shared.Sync
 	ValidateErrorJSON   *shared.ValidateErrorJSON
 	InternalServerError *shared.InternalServerError
 
-	Type UpdateSync200ApplicationJSONType
+	Type UpdateSyncResponseBodyType
 }
 
-func CreateUpdateSync200ApplicationJSONSync(sync shared.Sync) UpdateSync200ApplicationJSON {
-	typ := UpdateSync200ApplicationJSONTypeSync
+func CreateUpdateSyncResponseBodySync(sync shared.Sync) UpdateSyncResponseBody {
+	typ := UpdateSyncResponseBodyTypeSync
 
-	return UpdateSync200ApplicationJSON{
+	return UpdateSyncResponseBody{
 		Sync: &sync,
 		Type: typ,
 	}
 }
 
-func CreateUpdateSync200ApplicationJSONValidateErrorJSON(validateErrorJSON shared.ValidateErrorJSON) UpdateSync200ApplicationJSON {
-	typ := UpdateSync200ApplicationJSONTypeValidateErrorJSON
+func CreateUpdateSyncResponseBodyValidateErrorJSON(validateErrorJSON shared.ValidateErrorJSON) UpdateSyncResponseBody {
+	typ := UpdateSyncResponseBodyTypeValidateErrorJSON
 
-	return UpdateSync200ApplicationJSON{
+	return UpdateSyncResponseBody{
 		ValidateErrorJSON: &validateErrorJSON,
 		Type:              typ,
 	}
 }
 
-func CreateUpdateSync200ApplicationJSONInternalServerError(internalServerError shared.InternalServerError) UpdateSync200ApplicationJSON {
-	typ := UpdateSync200ApplicationJSONTypeInternalServerError
+func CreateUpdateSyncResponseBodyInternalServerError(internalServerError shared.InternalServerError) UpdateSyncResponseBody {
+	typ := UpdateSyncResponseBodyTypeInternalServerError
 
-	return UpdateSync200ApplicationJSON{
+	return UpdateSyncResponseBody{
 		InternalServerError: &internalServerError,
 		Type:                typ,
 	}
 }
 
-func (u *UpdateSync200ApplicationJSON) UnmarshalJSON(data []byte) error {
+func (u *UpdateSyncResponseBody) UnmarshalJSON(data []byte) error {
 
 	validateErrorJSON := new(shared.ValidateErrorJSON)
 	if err := utils.UnmarshalJSON(data, &validateErrorJSON, "", true, true); err == nil {
 		u.ValidateErrorJSON = validateErrorJSON
-		u.Type = UpdateSync200ApplicationJSONTypeValidateErrorJSON
+		u.Type = UpdateSyncResponseBodyTypeValidateErrorJSON
 		return nil
 	}
 
 	sync := new(shared.Sync)
 	if err := utils.UnmarshalJSON(data, &sync, "", true, true); err == nil {
 		u.Sync = sync
-		u.Type = UpdateSync200ApplicationJSONTypeSync
+		u.Type = UpdateSyncResponseBodyTypeSync
 		return nil
 	}
 
 	internalServerError := new(shared.InternalServerError)
 	if err := utils.UnmarshalJSON(data, &internalServerError, "", true, true); err == nil {
 		u.InternalServerError = internalServerError
-		u.Type = UpdateSync200ApplicationJSONTypeInternalServerError
+		u.Type = UpdateSyncResponseBodyTypeInternalServerError
 		return nil
 	}
 
 	return errors.New("could not unmarshal into supported union types")
 }
 
-func (u UpdateSync200ApplicationJSON) MarshalJSON() ([]byte, error) {
+func (u UpdateSyncResponseBody) MarshalJSON() ([]byte, error) {
 	if u.Sync != nil {
 		return utils.MarshalJSON(u.Sync, "", true)
 	}
@@ -123,10 +123,10 @@ type UpdateSyncResponse struct {
 	StatusCode int
 	// Raw HTTP response; suitable for custom response parsing
 	RawResponse *http.Response
-	// Ok
-	UpdateSync200ApplicationJSONOneOf *UpdateSync200ApplicationJSON
 	// Validation Failed
 	ValidateErrorJSON *shared.ValidateErrorJSON
+	// Ok
+	OneOf *UpdateSyncResponseBody
 }
 
 func (o *UpdateSyncResponse) GetContentType() string {
@@ -157,16 +157,16 @@ func (o *UpdateSyncResponse) GetRawResponse() *http.Response {
 	return o.RawResponse
 }
 
-func (o *UpdateSyncResponse) GetUpdateSync200ApplicationJSONOneOf() *UpdateSync200ApplicationJSON {
-	if o == nil {
-		return nil
-	}
-	return o.UpdateSync200ApplicationJSONOneOf
-}
-
 func (o *UpdateSyncResponse) GetValidateErrorJSON() *shared.ValidateErrorJSON {
 	if o == nil {
 		return nil
 	}
 	return o.ValidateErrorJSON
+}
+
+func (o *UpdateSyncResponse) GetOneOf() *UpdateSyncResponseBody {
+	if o == nil {
+		return nil
+	}
+	return o.OneOf
 }

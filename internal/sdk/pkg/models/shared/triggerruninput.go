@@ -3,7 +3,7 @@
 package shared
 
 import (
-	"hightouch/internal/sdk/pkg/utils"
+	"hightouch/v2/internal/sdk/pkg/utils"
 )
 
 // TriggerRunInput - The input of a trigger action to run syncs

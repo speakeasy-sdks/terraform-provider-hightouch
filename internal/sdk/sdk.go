@@ -6,10 +6,10 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"hightouch/internal/sdk/pkg/models/operations"
-	"hightouch/internal/sdk/pkg/models/sdkerrors"
-	"hightouch/internal/sdk/pkg/models/shared"
-	"hightouch/internal/sdk/pkg/utils"
+	"hightouch/v2/internal/sdk/pkg/models/operations"
+	"hightouch/v2/internal/sdk/pkg/models/sdkerrors"
+	"hightouch/v2/internal/sdk/pkg/models/shared"
+	"hightouch/v2/internal/sdk/pkg/utils"
 	"io"
 	"net/http"
 	"strings"
@@ -143,9 +143,9 @@ func New(opts ...SDKOption) *Hightouch {
 		sdkConfiguration: sdkConfiguration{
 			Language:          "go",
 			OpenAPIDocVersion: "1.0.0",
-			SDKVersion:        "1.10.0",
-			GenVersion:        "2.173.0",
-			UserAgent:         "speakeasy-sdk/go 1.10.0 2.173.0 1.0.0 hightouch",
+			SDKVersion:        "2.0.0",
+			GenVersion:        "2.181.1",
+			UserAgent:         "speakeasy-sdk/go 2.0.0 2.181.1 1.0.0 hightouch",
 		},
 	}
 	for _, opt := range opts {
@@ -222,12 +222,12 @@ func (s *Hightouch) CreateDestination(ctx context.Context, request shared.Destin
 	case httpRes.StatusCode == 200:
 		switch {
 		case utils.MatchContentType(contentType, `application/json`):
-			var out operations.CreateDestination200ApplicationJSON
+			var out operations.CreateDestinationResponseBody
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out, ""); err != nil {
 				return nil, err
 			}
 
-			res.CreateDestination200ApplicationJSONOneOf = &out
+			res.OneOf = &out
 		default:
 			return nil, sdkerrors.NewSDKError(fmt.Sprintf("unknown content-type received: %s", contentType), httpRes.StatusCode, string(rawBody), httpRes)
 		}
@@ -318,12 +318,12 @@ func (s *Hightouch) CreateModel(ctx context.Context, request shared.ModelCreate)
 	case httpRes.StatusCode == 200:
 		switch {
 		case utils.MatchContentType(contentType, `application/json`):
-			var out operations.CreateModel200ApplicationJSON
+			var out operations.CreateModelResponseBody
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out, ""); err != nil {
 				return nil, err
 			}
 
-			res.CreateModel200ApplicationJSONOneOf = &out
+			res.OneOf = &out
 		default:
 			return nil, sdkerrors.NewSDKError(fmt.Sprintf("unknown content-type received: %s", contentType), httpRes.StatusCode, string(rawBody), httpRes)
 		}
@@ -414,12 +414,12 @@ func (s *Hightouch) CreateSource(ctx context.Context, request shared.SourceCreat
 	case httpRes.StatusCode == 200:
 		switch {
 		case utils.MatchContentType(contentType, `application/json`):
-			var out operations.CreateSource200ApplicationJSON
+			var out operations.CreateSourceResponseBody
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out, ""); err != nil {
 				return nil, err
 			}
 
-			res.CreateSource200ApplicationJSONOneOf = &out
+			res.OneOf = &out
 		default:
 			return nil, sdkerrors.NewSDKError(fmt.Sprintf("unknown content-type received: %s", contentType), httpRes.StatusCode, string(rawBody), httpRes)
 		}
@@ -510,12 +510,12 @@ func (s *Hightouch) CreateSync(ctx context.Context, request shared.SyncCreate) (
 	case httpRes.StatusCode == 200:
 		switch {
 		case utils.MatchContentType(contentType, `application/json`):
-			var out operations.CreateSync200ApplicationJSON
+			var out operations.CreateSyncResponseBody
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out, ""); err != nil {
 				return nil, err
 			}
 
-			res.CreateSync200ApplicationJSONOneOf = &out
+			res.OneOf = &out
 		default:
 			return nil, sdkerrors.NewSDKError(fmt.Sprintf("unknown content-type received: %s", contentType), httpRes.StatusCode, string(rawBody), httpRes)
 		}
@@ -852,12 +852,12 @@ func (s *Hightouch) ListDestination(ctx context.Context, request operations.List
 	case httpRes.StatusCode == 200:
 		switch {
 		case utils.MatchContentType(contentType, `application/json`):
-			var out operations.ListDestination200ApplicationJSON
+			var out operations.ListDestinationResponseBody
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out, ""); err != nil {
 				return nil, err
 			}
 
-			res.ListDestination200ApplicationJSONObject = &out
+			res.Object = &out
 		default:
 			return nil, sdkerrors.NewSDKError(fmt.Sprintf("unknown content-type received: %s", contentType), httpRes.StatusCode, string(rawBody), httpRes)
 		}
@@ -926,12 +926,12 @@ func (s *Hightouch) ListModel(ctx context.Context, request operations.ListModelR
 	case httpRes.StatusCode == 200:
 		switch {
 		case utils.MatchContentType(contentType, `application/json`):
-			var out operations.ListModel200ApplicationJSON
+			var out operations.ListModelResponseBody
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out, ""); err != nil {
 				return nil, err
 			}
 
-			res.ListModel200ApplicationJSONObject = &out
+			res.Object = &out
 		default:
 			return nil, sdkerrors.NewSDKError(fmt.Sprintf("unknown content-type received: %s", contentType), httpRes.StatusCode, string(rawBody), httpRes)
 		}
@@ -1000,12 +1000,12 @@ func (s *Hightouch) ListSource(ctx context.Context, request operations.ListSourc
 	case httpRes.StatusCode == 200:
 		switch {
 		case utils.MatchContentType(contentType, `application/json`):
-			var out operations.ListSource200ApplicationJSON
+			var out operations.ListSourceResponseBody
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out, ""); err != nil {
 				return nil, err
 			}
 
-			res.ListSource200ApplicationJSONObject = &out
+			res.Object = &out
 		default:
 			return nil, sdkerrors.NewSDKError(fmt.Sprintf("unknown content-type received: %s", contentType), httpRes.StatusCode, string(rawBody), httpRes)
 		}
@@ -1062,12 +1062,12 @@ func (s *Hightouch) ListSync(ctx context.Context, request operations.ListSyncReq
 	case httpRes.StatusCode == 200:
 		switch {
 		case utils.MatchContentType(contentType, `application/json`):
-			var out operations.ListSync200ApplicationJSON
+			var out operations.ListSyncResponseBody
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out, ""); err != nil {
 				return nil, err
 			}
 
-			res.ListSync200ApplicationJSONObject = &out
+			res.Object = &out
 		default:
 			return nil, sdkerrors.NewSDKError(fmt.Sprintf("unknown content-type received: %s", contentType), httpRes.StatusCode, string(rawBody), httpRes)
 		}
@@ -1139,12 +1139,12 @@ func (s *Hightouch) ListSyncRuns(ctx context.Context, request operations.ListSyn
 	case httpRes.StatusCode == 200:
 		switch {
 		case utils.MatchContentType(contentType, `application/json`):
-			var out operations.ListSyncRuns200ApplicationJSON
+			var out operations.ListSyncRunsResponseBody
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out, ""); err != nil {
 				return nil, err
 			}
 
-			res.ListSyncRuns200ApplicationJSONObject = &out
+			res.Object = &out
 		default:
 			return nil, sdkerrors.NewSDKError(fmt.Sprintf("unknown content-type received: %s", contentType), httpRes.StatusCode, string(rawBody), httpRes)
 		}
@@ -1312,12 +1312,12 @@ func (s *Hightouch) TriggerRunCustom(ctx context.Context, request shared.Trigger
 	case httpRes.StatusCode == 200:
 		switch {
 		case utils.MatchContentType(contentType, `application/json`):
-			var out operations.TriggerRunCustom200ApplicationJSON
+			var out operations.TriggerRunCustomResponseBody
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out, ""); err != nil {
 				return nil, err
 			}
 
-			res.TriggerRunCustom200ApplicationJSONOneOf = &out
+			res.OneOf = &out
 		default:
 			return nil, sdkerrors.NewSDKError(fmt.Sprintf("unknown content-type received: %s", contentType), httpRes.StatusCode, string(rawBody), httpRes)
 		}
@@ -1482,12 +1482,12 @@ func (s *Hightouch) UpdateDestination(ctx context.Context, request operations.Up
 	case httpRes.StatusCode == 200:
 		switch {
 		case utils.MatchContentType(contentType, `application/json`):
-			var out operations.UpdateDestination200ApplicationJSON
+			var out operations.UpdateDestinationResponseBody
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out, ""); err != nil {
 				return nil, err
 			}
 
-			res.UpdateDestination200ApplicationJSONOneOf = &out
+			res.OneOf = &out
 		default:
 			return nil, sdkerrors.NewSDKError(fmt.Sprintf("unknown content-type received: %s", contentType), httpRes.StatusCode, string(rawBody), httpRes)
 		}
@@ -1583,12 +1583,12 @@ func (s *Hightouch) UpdateModel(ctx context.Context, request operations.UpdateMo
 	case httpRes.StatusCode == 200:
 		switch {
 		case utils.MatchContentType(contentType, `application/json`):
-			var out operations.UpdateModel200ApplicationJSON
+			var out operations.UpdateModelResponseBody
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out, ""); err != nil {
 				return nil, err
 			}
 
-			res.UpdateModel200ApplicationJSONOneOf = &out
+			res.OneOf = &out
 		default:
 			return nil, sdkerrors.NewSDKError(fmt.Sprintf("unknown content-type received: %s", contentType), httpRes.StatusCode, string(rawBody), httpRes)
 		}
@@ -1684,12 +1684,12 @@ func (s *Hightouch) UpdateSource(ctx context.Context, request operations.UpdateS
 	case httpRes.StatusCode == 200:
 		switch {
 		case utils.MatchContentType(contentType, `application/json`):
-			var out operations.UpdateSource200ApplicationJSON
+			var out operations.UpdateSourceResponseBody
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out, ""); err != nil {
 				return nil, err
 			}
 
-			res.UpdateSource200ApplicationJSONOneOf = &out
+			res.OneOf = &out
 		default:
 			return nil, sdkerrors.NewSDKError(fmt.Sprintf("unknown content-type received: %s", contentType), httpRes.StatusCode, string(rawBody), httpRes)
 		}
@@ -1785,12 +1785,12 @@ func (s *Hightouch) UpdateSync(ctx context.Context, request operations.UpdateSyn
 	case httpRes.StatusCode == 200:
 		switch {
 		case utils.MatchContentType(contentType, `application/json`):
-			var out operations.UpdateSync200ApplicationJSON
+			var out operations.UpdateSyncResponseBody
 			if err := utils.UnmarshalJsonFromResponseBody(bytes.NewBuffer(rawBody), &out, ""); err != nil {
 				return nil, err
 			}
 
-			res.UpdateSync200ApplicationJSONOneOf = &out
+			res.OneOf = &out
 		default:
 			return nil, sdkerrors.NewSDKError(fmt.Sprintf("unknown content-type received: %s", contentType), httpRes.StatusCode, string(rawBody), httpRes)
 		}

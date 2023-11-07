@@ -4,7 +4,7 @@ package listplanmodifier
 
 import (
 	"context"
-	"hightouch/internal/planmodifiers/utils"
+	"hightouch/v2/internal/planmodifiers/utils"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 )
