@@ -3,7 +3,7 @@
 package shared
 
 import (
-	"hightouch/v2/internal/sdk/pkg/utils"
+	"github.com/de-tf-providers/terraform-provider-hightouch/v2/internal/sdk/pkg/utils"
 	"time"
 )
 

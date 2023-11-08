@@ -4,7 +4,7 @@ package mapplanmodifier
 
 import (
 	"context"
-	"hightouch/v2/internal/planmodifiers/utils"
+	"github.com/de-tf-providers/terraform-provider-hightouch/v2/internal/planmodifiers/utils"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 )

@@ -4,8 +4,8 @@ package operations
 
 import (
 	"errors"
-	"hightouch/v2/internal/sdk/pkg/models/shared"
-	"hightouch/v2/internal/sdk/pkg/utils"
+	"github.com/de-tf-providers/terraform-provider-hightouch/v2/internal/sdk/pkg/models/shared"
+	"github.com/de-tf-providers/terraform-provider-hightouch/v2/internal/sdk/pkg/utils"
 	"net/http"
 )
 

@@ -3,7 +3,7 @@
 package operations
 
 import (
-	"hightouch/v2/internal/sdk/pkg/models/shared"
+	"github.com/de-tf-providers/terraform-provider-hightouch/v2/internal/sdk/pkg/models/shared"
 	"net/http"
 )
 

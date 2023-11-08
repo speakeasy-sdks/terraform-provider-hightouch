@@ -1,4 +1,4 @@
-module hightouch/v2
+module github.com/de-tf-providers/terraform-provider-hightouch/v2
 
 go 1.18
 

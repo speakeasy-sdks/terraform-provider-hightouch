@@ -7,8 +7,8 @@ import (
 	"flag"
 	"log"
 
+	"github.com/de-tf-providers/terraform-provider-hightouch/v2/internal/provider"
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
-	"hightouch/v2/internal/provider"
 )
 
 // Run "go generate" to format example terraform files and generate the docs for the registry/website
