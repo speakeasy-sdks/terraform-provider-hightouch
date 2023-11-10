@@ -2,21 +2,23 @@ configVersion: 1.0.0
 management:
   docChecksum: 6c15b6978da01d8767c381eb7fb088bd
   docVersion: 1.0.0
-  speakeasyVersion: 1.116.0
-  generationVersion: 2.185.0
+  speakeasyVersion: 1.118.3
+  generationVersion: 2.187.7
 generation:
   comments: {}
   sdkClassName: hightouch
   repoURL: https://github.com/speakeasy-sdks/terraform-provider-hightouch.git
+  usageSnippets:
+    optionalPropertyRendering: withExample
 features:
   terraform:
     constsAndDefaults: 0.1.1
-    core: 3.3.1
+    core: 3.4.2
     globalSecurity: 2.81.1
     globalServerURLs: 2.82.0
     unions: 2.81.5
 terraform:
-  version: 2.1.1
+  version: 2.2.0
   author: de-tf-providers
   imports:
     option: openapi
