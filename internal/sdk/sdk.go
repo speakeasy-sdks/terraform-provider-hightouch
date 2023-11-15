@@ -143,9 +143,9 @@ func New(opts ...SDKOption) *Hightouch {
 		sdkConfiguration: sdkConfiguration{
 			Language:          "go",
 			OpenAPIDocVersion: "1.0.0",
-			SDKVersion:        "2.2.1",
-			GenVersion:        "2.188.1",
-			UserAgent:         "speakeasy-sdk/go 2.2.1 2.188.1 1.0.0 hightouch",
+			SDKVersion:        "2.2.2",
+			GenVersion:        "2.189.1",
+			UserAgent:         "speakeasy-sdk/go 2.2.2 2.189.1 1.0.0 hightouch",
 		},
 	}
 	for _, opt := range opts {
@@ -193,7 +193,7 @@ func (s *Hightouch) CreateDestination(ctx context.Context, request shared.Destin
 
 	req.Header.Set("Content-Type", reqContentType)
 
-	client := s.sdkConfiguration.SecurityClient
+	client := s.sdkConfiguration.DefaultClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -289,7 +289,7 @@ func (s *Hightouch) CreateModel(ctx context.Context, request shared.ModelCreate)
 
 	req.Header.Set("Content-Type", reqContentType)
 
-	client := s.sdkConfiguration.SecurityClient
+	client := s.sdkConfiguration.DefaultClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -385,7 +385,7 @@ func (s *Hightouch) CreateSource(ctx context.Context, request shared.SourceCreat
 
 	req.Header.Set("Content-Type", reqContentType)
 
-	client := s.sdkConfiguration.SecurityClient
+	client := s.sdkConfiguration.DefaultClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -481,7 +481,7 @@ func (s *Hightouch) CreateSync(ctx context.Context, request shared.SyncCreate) (
 
 	req.Header.Set("Content-Type", reqContentType)
 
-	client := s.sdkConfiguration.SecurityClient
+	client := s.sdkConfiguration.DefaultClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -567,7 +567,7 @@ func (s *Hightouch) GetDestination(ctx context.Context, request operations.GetDe
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("user-agent", s.sdkConfiguration.UserAgent)
 
-	client := s.sdkConfiguration.SecurityClient
+	client := s.sdkConfiguration.DefaultClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -628,7 +628,7 @@ func (s *Hightouch) GetModel(ctx context.Context, request operations.GetModelReq
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("user-agent", s.sdkConfiguration.UserAgent)
 
-	client := s.sdkConfiguration.SecurityClient
+	client := s.sdkConfiguration.DefaultClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -689,7 +689,7 @@ func (s *Hightouch) GetSource(ctx context.Context, request operations.GetSourceR
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("user-agent", s.sdkConfiguration.UserAgent)
 
-	client := s.sdkConfiguration.SecurityClient
+	client := s.sdkConfiguration.DefaultClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -762,7 +762,7 @@ func (s *Hightouch) GetSync(ctx context.Context, request operations.GetSyncReque
 	req.Header.Set("Accept", "application/json")
 	req.Header.Set("user-agent", s.sdkConfiguration.UserAgent)
 
-	client := s.sdkConfiguration.SecurityClient
+	client := s.sdkConfiguration.DefaultClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -824,7 +824,7 @@ func (s *Hightouch) ListDestination(ctx context.Context, request operations.List
 		return nil, fmt.Errorf("error populating query params: %w", err)
 	}
 
-	client := s.sdkConfiguration.SecurityClient
+	client := s.sdkConfiguration.DefaultClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -898,7 +898,7 @@ func (s *Hightouch) ListModel(ctx context.Context, request operations.ListModelR
 		return nil, fmt.Errorf("error populating query params: %w", err)
 	}
 
-	client := s.sdkConfiguration.SecurityClient
+	client := s.sdkConfiguration.DefaultClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -972,7 +972,7 @@ func (s *Hightouch) ListSource(ctx context.Context, request operations.ListSourc
 		return nil, fmt.Errorf("error populating query params: %w", err)
 	}
 
-	client := s.sdkConfiguration.SecurityClient
+	client := s.sdkConfiguration.DefaultClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -1034,7 +1034,7 @@ func (s *Hightouch) ListSync(ctx context.Context, request operations.ListSyncReq
 		return nil, fmt.Errorf("error populating query params: %w", err)
 	}
 
-	client := s.sdkConfiguration.SecurityClient
+	client := s.sdkConfiguration.DefaultClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -1111,7 +1111,7 @@ func (s *Hightouch) ListSyncRuns(ctx context.Context, request operations.ListSyn
 		return nil, fmt.Errorf("error populating query params: %w", err)
 	}
 
-	client := s.sdkConfiguration.SecurityClient
+	client := s.sdkConfiguration.DefaultClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -1196,7 +1196,7 @@ func (s *Hightouch) TriggerRun(ctx context.Context, request operations.TriggerRu
 
 	req.Header.Set("Content-Type", reqContentType)
 
-	client := s.sdkConfiguration.SecurityClient
+	client := s.sdkConfiguration.DefaultClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -1283,7 +1283,7 @@ func (s *Hightouch) TriggerRunCustom(ctx context.Context, request shared.Trigger
 
 	req.Header.Set("Content-Type", reqContentType)
 
-	client := s.sdkConfiguration.SecurityClient
+	client := s.sdkConfiguration.DefaultClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -1364,7 +1364,7 @@ func (s *Hightouch) TriggerRunIDGraph(ctx context.Context, request operations.Tr
 
 	req.Header.Set("Content-Type", reqContentType)
 
-	client := s.sdkConfiguration.SecurityClient
+	client := s.sdkConfiguration.DefaultClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -1453,7 +1453,7 @@ func (s *Hightouch) UpdateDestination(ctx context.Context, request operations.Up
 
 	req.Header.Set("Content-Type", reqContentType)
 
-	client := s.sdkConfiguration.SecurityClient
+	client := s.sdkConfiguration.DefaultClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -1554,7 +1554,7 @@ func (s *Hightouch) UpdateModel(ctx context.Context, request operations.UpdateMo
 
 	req.Header.Set("Content-Type", reqContentType)
 
-	client := s.sdkConfiguration.SecurityClient
+	client := s.sdkConfiguration.DefaultClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -1655,7 +1655,7 @@ func (s *Hightouch) UpdateSource(ctx context.Context, request operations.UpdateS
 
 	req.Header.Set("Content-Type", reqContentType)
 
-	client := s.sdkConfiguration.SecurityClient
+	client := s.sdkConfiguration.DefaultClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
@@ -1756,7 +1756,7 @@ func (s *Hightouch) UpdateSync(ctx context.Context, request operations.UpdateSyn
 
 	req.Header.Set("Content-Type", reqContentType)
 
-	client := s.sdkConfiguration.SecurityClient
+	client := s.sdkConfiguration.DefaultClient
 
 	httpRes, err := client.Do(req)
 	if err != nil {
