@@ -2,8 +2,8 @@ configVersion: 1.0.0
 management:
   docChecksum: 6c15b6978da01d8767c381eb7fb088bd
   docVersion: 1.0.0
-  speakeasyVersion: 1.120.3
-  generationVersion: 2.192.1
+  speakeasyVersion: 1.121.1
+  generationVersion: 2.194.1
 generation:
   comments: {}
   sdkClassName: hightouch
@@ -13,12 +13,12 @@ generation:
 features:
   terraform:
     constsAndDefaults: 0.1.1
-    core: 3.4.5
+    core: 3.5.0
     globalSecurity: 2.81.1
-    globalServerURLs: 2.82.0
+    globalServerURLs: 2.82.1
     unions: 2.81.5
 terraform:
-  version: 2.2.3
+  version: 2.3.0
   author: de-tf-providers
   imports:
     option: openapi
