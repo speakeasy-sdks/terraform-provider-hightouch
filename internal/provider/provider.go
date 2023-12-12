@@ -66,7 +66,12 @@ func (p *HightouchProvider) Configure(ctx context.Context, req provider.Configur
 		ServerURL = "https://api.hightouch.com/api/v1"
 	}
 
-	bearerAuth := data.BearerAuth.ValueString()
+	bearerAuth := new(string)
+	if !data.BearerAuth.IsUnknown() && !data.BearerAuth.IsNull() {
+		*bearerAuth = data.BearerAuth.ValueString()
+	} else {
+		bearerAuth = nil
+	}
 	security := shared.Security{
 		BearerAuth: bearerAuth,
 	}
