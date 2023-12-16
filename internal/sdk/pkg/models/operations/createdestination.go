@@ -17,6 +17,7 @@ const (
 	CreateDestinationResponseBodyTypeInternalServerError CreateDestinationResponseBodyType = "InternalServerError"
 )
 
+// CreateDestinationResponseBody - Ok
 type CreateDestinationResponseBody struct {
 	Destination         *shared.Destination
 	ValidateErrorJSON   *shared.ValidateErrorJSON

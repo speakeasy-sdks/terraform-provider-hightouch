@@ -37,6 +37,7 @@ const (
 	UpdateSourceResponseBodyTypeInternalServerError UpdateSourceResponseBodyType = "InternalServerError"
 )
 
+// UpdateSourceResponseBody - Ok
 type UpdateSourceResponseBody struct {
 	Source              *shared.Source
 	ValidateErrorJSON   *shared.ValidateErrorJSON

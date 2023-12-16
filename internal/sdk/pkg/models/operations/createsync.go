@@ -17,6 +17,7 @@ const (
 	CreateSyncResponseBodyTypeInternalServerError CreateSyncResponseBodyType = "InternalServerError"
 )
 
+// CreateSyncResponseBody - Ok
 type CreateSyncResponseBody struct {
 	Sync                *shared.Sync
 	ValidateErrorJSON   *shared.ValidateErrorJSON

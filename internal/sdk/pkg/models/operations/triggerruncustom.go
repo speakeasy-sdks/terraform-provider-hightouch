@@ -16,6 +16,7 @@ const (
 	TriggerRunCustomResponseBodyTypeValidateErrorJSON TriggerRunCustomResponseBodyType = "ValidateErrorJSON"
 )
 
+// TriggerRunCustomResponseBody - Ok
 type TriggerRunCustomResponseBody struct {
 	TriggerRunOutput  *shared.TriggerRunOutput
 	ValidateErrorJSON *shared.ValidateErrorJSON
