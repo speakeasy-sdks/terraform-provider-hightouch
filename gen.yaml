@@ -1,24 +1,10 @@
-configVersion: 1.0.0
-management:
-  docChecksum: 6c15b6978da01d8767c381eb7fb088bd
-  docVersion: 1.0.0
-  speakeasyVersion: 1.126.4
-  generationVersion: 2.214.10
+configVersion: 2.0.0
 generation:
-  comments: {}
   sdkClassName: hightouch
-  repoURL: https://github.com/speakeasy-sdks/terraform-provider-hightouch.git
   usageSnippets:
     optionalPropertyRendering: withExample
   fixes:
     nameResolutionDec2023: false
-features:
-  terraform:
-    constsAndDefaults: 0.1.2
-    core: 3.6.3
-    globalSecurity: 2.81.2
-    globalServerURLs: 2.82.1
-    unions: 2.81.7
 terraform:
   version: 2.4.1
   author: de-tf-providers
@@ -33,5 +19,3 @@ terraform:
   inputModelSuffix: input
   outputModelSuffix: output
   packageName: hightouch
-  published: true
-  repoSubDirectory: .
