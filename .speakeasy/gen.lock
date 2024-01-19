@@ -4,9 +4,9 @@ management:
   docChecksum: 6c15b6978da01d8767c381eb7fb088bd
   docVersion: 1.0.0
   speakeasyVersion: internal
-  generationVersion: 2.234.3
-  releaseVersion: 2.5.3
-  configChecksum: 64ba2c63e4ed806211294659b2704072
+  generationVersion: 2.237.2
+  releaseVersion: 2.5.4
+  configChecksum: a34c96c52cef2c89c1f571ef1c27652a
   repoURL: https://github.com/speakeasy-sdks/terraform-provider-hightouch.git
   repoSubDirectory: .
   published: true
@@ -14,7 +14,7 @@ features:
   terraform:
     constsAndDefaults: 0.1.2
     core: 3.8.4
-    globalSecurity: 2.81.2
+    globalSecurity: 2.81.3
     globalServerURLs: 2.82.1
     unions: 2.81.7
 generatedFiles:
