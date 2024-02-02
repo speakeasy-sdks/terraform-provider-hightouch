@@ -3,7 +3,7 @@
 package shared
 
 import (
-	"github.com/de-tf-providers/terraform-provider-hightouch/v2/internal/sdk/pkg/utils"
+	"github.com/de-tf-providers/terraform-provider-hightouch/v3/internal/sdk/pkg/utils"
 )
 
 // TriggerRunInput - The input of a trigger action to run syncs

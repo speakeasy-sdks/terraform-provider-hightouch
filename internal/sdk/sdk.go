@@ -6,10 +6,10 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"github.com/de-tf-providers/terraform-provider-hightouch/v2/internal/sdk/pkg/models/operations"
-	"github.com/de-tf-providers/terraform-provider-hightouch/v2/internal/sdk/pkg/models/sdkerrors"
-	"github.com/de-tf-providers/terraform-provider-hightouch/v2/internal/sdk/pkg/models/shared"
-	"github.com/de-tf-providers/terraform-provider-hightouch/v2/internal/sdk/pkg/utils"
+	"github.com/de-tf-providers/terraform-provider-hightouch/v3/internal/sdk/pkg/models/operations"
+	"github.com/de-tf-providers/terraform-provider-hightouch/v3/internal/sdk/pkg/models/sdkerrors"
+	"github.com/de-tf-providers/terraform-provider-hightouch/v3/internal/sdk/pkg/models/shared"
+	"github.com/de-tf-providers/terraform-provider-hightouch/v3/internal/sdk/pkg/utils"
 	"io"
 	"net/http"
 	"strings"
@@ -143,9 +143,9 @@ func New(opts ...SDKOption) *Hightouch {
 		sdkConfiguration: sdkConfiguration{
 			Language:          "go",
 			OpenAPIDocVersion: "1.0.0",
-			SDKVersion:        "2.5.4",
-			GenVersion:        "2.237.2",
-			UserAgent:         "speakeasy-sdk/go 2.5.4 2.237.2 1.0.0 hightouch",
+			SDKVersion:        "3.0.0",
+			GenVersion:        "2.248.1",
+			UserAgent:         "speakeasy-sdk/go 3.0.0 2.248.1 1.0.0 hightouch",
 		},
 	}
 	for _, opt := range opts {

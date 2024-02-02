@@ -7,7 +7,7 @@ import (
 	"flag"
 	"log"
 
-	"github.com/de-tf-providers/terraform-provider-hightouch/v2/internal/provider"
+	"github.com/de-tf-providers/terraform-provider-hightouch/v3/internal/provider"
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 )
 

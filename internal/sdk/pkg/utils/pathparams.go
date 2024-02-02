@@ -13,7 +13,7 @@ import (
 
 	"github.com/ericlagergren/decimal"
 
-	"github.com/de-tf-providers/terraform-provider-hightouch/v2/internal/sdk/pkg/types"
+	"github.com/de-tf-providers/terraform-provider-hightouch/v3/internal/sdk/pkg/types"
 )
 
 func GenerateURL(ctx context.Context, serverURL, path string, pathParams interface{}, globals map[string]map[string]map[string]interface{}) (string, error) {
