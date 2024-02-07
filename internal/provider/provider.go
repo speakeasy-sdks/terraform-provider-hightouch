@@ -4,8 +4,8 @@ package provider
 
 import (
 	"context"
-	"github.com/de-tf-providers/terraform-provider-hightouch/v3/internal/sdk"
-	"github.com/de-tf-providers/terraform-provider-hightouch/v3/internal/sdk/pkg/models/shared"
+	"github.com/de-tf-providers/terraform-provider-hightouch/v4/internal/sdk"
+	"github.com/de-tf-providers/terraform-provider-hightouch/v4/internal/sdk/pkg/models/shared"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"

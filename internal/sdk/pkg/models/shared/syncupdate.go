@@ -4,7 +4,7 @@ package shared
 
 import (
 	"errors"
-	"github.com/de-tf-providers/terraform-provider-hightouch/v3/internal/sdk/pkg/utils"
+	"github.com/de-tf-providers/terraform-provider-hightouch/v4/internal/sdk/pkg/utils"
 )
 
 type SyncUpdateSchemasScheduleType string

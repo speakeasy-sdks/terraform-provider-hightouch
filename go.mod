@@ -1,4 +1,4 @@
-module github.com/de-tf-providers/terraform-provider-hightouch/v3
+module github.com/de-tf-providers/terraform-provider-hightouch/v4
 
 go 1.20
 

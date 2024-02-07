@@ -12,7 +12,7 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/de-tf-providers/terraform-provider-hightouch/v3/internal/sdk/pkg/types"
+	"github.com/de-tf-providers/terraform-provider-hightouch/v4/internal/sdk/pkg/types"
 
 	"github.com/ericlagergren/decimal"
 )
