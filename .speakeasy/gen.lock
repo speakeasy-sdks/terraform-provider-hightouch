@@ -3,20 +3,20 @@ id: 241ffe49-5500-486c-ad2c-b06af14b69f3
 management:
   docChecksum: 6c15b6978da01d8767c381eb7fb088bd
   docVersion: 1.0.0
-  speakeasyVersion: internal
-  generationVersion: 2.250.12
-  releaseVersion: 4.0.0
-  configChecksum: 3cbc46c52181a3da38bc949a91696a01
+  speakeasyVersion: 1.207.1
+  generationVersion: 2.280.6
+  releaseVersion: 4.1.0
+  configChecksum: a063507e30cdf5d9139e91115c1d1225
   repoURL: https://github.com/speakeasy-sdks/terraform-provider-hightouch.git
   repoSubDirectory: .
   published: true
 features:
   terraform:
-    constsAndDefaults: 0.1.3
-    core: 3.9.4
-    globalSecurity: 2.81.3
+    constsAndDefaults: 0.1.4
+    core: 3.10.3
+    globalSecurity: 2.81.5
     globalServerURLs: 2.82.1
-    unions: 2.81.7
+    unions: 2.81.9
 generatedFiles:
   - internal/sdk/sdk.go
   - examples/README.md
