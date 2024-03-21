@@ -3,22 +3,91 @@ id: 241ffe49-5500-486c-ad2c-b06af14b69f3
 management:
   docChecksum: 6c15b6978da01d8767c381eb7fb088bd
   docVersion: 1.0.0
-  speakeasyVersion: 1.207.1
-  generationVersion: 2.280.6
-  releaseVersion: 4.1.0
-  configChecksum: a063507e30cdf5d9139e91115c1d1225
+  speakeasyVersion: 1.215.1
+  generationVersion: 2.286.4
+  releaseVersion: 4.2.0
+  configChecksum: bb4f569174d7d0ccd98581c9d80e2278
   repoURL: https://github.com/speakeasy-sdks/terraform-provider-hightouch.git
   repoSubDirectory: .
   published: true
 features:
   terraform:
     constsAndDefaults: 0.1.4
-    core: 3.10.3
-    globalSecurity: 2.81.5
+    core: 3.11.1
+    globalSecurity: 2.81.6
     globalServerURLs: 2.82.1
-    unions: 2.81.9
+    unions: 2.81.10
 generatedFiles:
-  - internal/sdk/sdk.go
+  - internal/sdk/hightouch.go
+  - internal/sdk/models/errors/sdkerror.go
+  - internal/sdk/types/bigint.go
+  - internal/sdk/types/date.go
+  - internal/sdk/types/datetime.go
+  - internal/sdk/types/decimal.go
+  - internal/sdk/types/pointers.go
+  - internal/sdk/internal/utils/contenttype.go
+  - internal/sdk/internal/utils/form.go
+  - internal/sdk/internal/utils/headers.go
+  - internal/sdk/internal/utils/json.go
+  - internal/sdk/internal/utils/pathparams.go
+  - internal/sdk/internal/utils/queryparams.go
+  - internal/sdk/internal/utils/requestbody.go
+  - internal/sdk/internal/utils/retries.go
+  - internal/sdk/internal/utils/security.go
+  - internal/sdk/internal/utils/utils.go
+  - internal/sdk/models/operations/createdestination.go
+  - internal/sdk/models/operations/createmodel.go
+  - internal/sdk/models/operations/createsource.go
+  - internal/sdk/models/operations/createsync.go
+  - internal/sdk/models/operations/getdestination.go
+  - internal/sdk/models/operations/getmodel.go
+  - internal/sdk/models/operations/getsource.go
+  - internal/sdk/models/operations/getsync.go
+  - internal/sdk/models/operations/listdestination.go
+  - internal/sdk/models/operations/listmodel.go
+  - internal/sdk/models/operations/listsource.go
+  - internal/sdk/models/operations/listsync.go
+  - internal/sdk/models/operations/listsyncruns.go
+  - internal/sdk/models/operations/triggerrun.go
+  - internal/sdk/models/operations/triggerruncustom.go
+  - internal/sdk/models/operations/triggerrunidgraph.go
+  - internal/sdk/models/operations/updatedestination.go
+  - internal/sdk/models/operations/updatemodel.go
+  - internal/sdk/models/operations/updatesource.go
+  - internal/sdk/models/operations/updatesync.go
+  - internal/sdk/models/shared/destination.go
+  - internal/sdk/models/shared/validateerrorjson.go
+  - internal/sdk/models/shared/internalservererror.go
+  - internal/sdk/models/shared/destinationcreate.go
+  - internal/sdk/models/shared/model.go
+  - internal/sdk/models/shared/modelcreate.go
+  - internal/sdk/models/shared/source.go
+  - internal/sdk/models/shared/sourcecreate.go
+  - internal/sdk/models/shared/sync.go
+  - internal/sdk/models/shared/syncstatus.go
+  - internal/sdk/models/shared/intervalschedule.go
+  - internal/sdk/models/shared/interval.go
+  - internal/sdk/models/shared/intervalunit.go
+  - internal/sdk/models/shared/cronschedule.go
+  - internal/sdk/models/shared/visualcronschedule.go
+  - internal/sdk/models/shared/recorddaybooleanorundefined.go
+  - internal/sdk/models/shared/dbtschedule.go
+  - internal/sdk/models/shared/synccreate.go
+  - internal/sdk/models/shared/syncrun.go
+  - internal/sdk/models/shared/syncrunstatus.go
+  - internal/sdk/models/shared/triggerrunoutput.go
+  - internal/sdk/models/shared/triggerruninput.go
+  - internal/sdk/models/shared/triggerruncustominput.go
+  - internal/sdk/models/shared/triggerrunidgraphoutput.go
+  - internal/sdk/models/shared/triggerrunidgraphinput.go
+  - internal/sdk/models/shared/destinationupdate.go
+  - internal/sdk/models/shared/modelupdate.go
+  - internal/sdk/models/shared/sourceupdate.go
+  - internal/sdk/models/shared/syncupdate.go
+  - internal/sdk/models/shared/security.go
+  - internal/sdk/.gitignore
+  - internal/sdk/.gitattributes
+  - internal/sdk/internal/hooks/hooks.go
   - examples/README.md
   - go.mod
   - go.sum
@@ -47,22 +116,6 @@ generatedFiles:
   - internal/provider/reflect/slice.go
   - internal/provider/reflect/struct.go
   - internal/provider/utils.go
-  - internal/sdk/pkg/models/sdkerrors/sdkerror.go
-  - internal/sdk/pkg/types/bigint.go
-  - internal/sdk/pkg/types/date.go
-  - internal/sdk/pkg/types/datetime.go
-  - internal/sdk/pkg/types/decimal.go
-  - internal/sdk/pkg/types/pointers.go
-  - internal/sdk/pkg/utils/contenttype.go
-  - internal/sdk/pkg/utils/form.go
-  - internal/sdk/pkg/utils/headers.go
-  - internal/sdk/pkg/utils/json.go
-  - internal/sdk/pkg/utils/pathparams.go
-  - internal/sdk/pkg/utils/queryparams.go
-  - internal/sdk/pkg/utils/requestbody.go
-  - internal/sdk/pkg/utils/retries.go
-  - internal/sdk/pkg/utils/security.go
-  - internal/sdk/pkg/utils/utils.go
   - internal/validators/DateValidator.go
   - internal/validators/ExactlyOneChild.go
   - internal/validators/JSONParseValidator.go
@@ -79,56 +132,6 @@ generatedFiles:
   - main.go
   - terraform-registry-manifest.json
   - tools/tools.go
-  - internal/sdk/pkg/models/operations/createdestination.go
-  - internal/sdk/pkg/models/operations/createmodel.go
-  - internal/sdk/pkg/models/operations/createsource.go
-  - internal/sdk/pkg/models/operations/createsync.go
-  - internal/sdk/pkg/models/operations/getdestination.go
-  - internal/sdk/pkg/models/operations/getmodel.go
-  - internal/sdk/pkg/models/operations/getsource.go
-  - internal/sdk/pkg/models/operations/getsync.go
-  - internal/sdk/pkg/models/operations/listdestination.go
-  - internal/sdk/pkg/models/operations/listmodel.go
-  - internal/sdk/pkg/models/operations/listsource.go
-  - internal/sdk/pkg/models/operations/listsync.go
-  - internal/sdk/pkg/models/operations/listsyncruns.go
-  - internal/sdk/pkg/models/operations/triggerrun.go
-  - internal/sdk/pkg/models/operations/triggerruncustom.go
-  - internal/sdk/pkg/models/operations/triggerrunidgraph.go
-  - internal/sdk/pkg/models/operations/updatedestination.go
-  - internal/sdk/pkg/models/operations/updatemodel.go
-  - internal/sdk/pkg/models/operations/updatesource.go
-  - internal/sdk/pkg/models/operations/updatesync.go
-  - internal/sdk/pkg/models/shared/destination.go
-  - internal/sdk/pkg/models/shared/validateerrorjson.go
-  - internal/sdk/pkg/models/shared/internalservererror.go
-  - internal/sdk/pkg/models/shared/destinationcreate.go
-  - internal/sdk/pkg/models/shared/model.go
-  - internal/sdk/pkg/models/shared/modelcreate.go
-  - internal/sdk/pkg/models/shared/source.go
-  - internal/sdk/pkg/models/shared/sourcecreate.go
-  - internal/sdk/pkg/models/shared/sync.go
-  - internal/sdk/pkg/models/shared/syncstatus.go
-  - internal/sdk/pkg/models/shared/intervalschedule.go
-  - internal/sdk/pkg/models/shared/interval.go
-  - internal/sdk/pkg/models/shared/intervalunit.go
-  - internal/sdk/pkg/models/shared/cronschedule.go
-  - internal/sdk/pkg/models/shared/visualcronschedule.go
-  - internal/sdk/pkg/models/shared/recorddaybooleanorundefined.go
-  - internal/sdk/pkg/models/shared/dbtschedule.go
-  - internal/sdk/pkg/models/shared/synccreate.go
-  - internal/sdk/pkg/models/shared/syncrun.go
-  - internal/sdk/pkg/models/shared/syncrunstatus.go
-  - internal/sdk/pkg/models/shared/triggerrunoutput.go
-  - internal/sdk/pkg/models/shared/triggerruninput.go
-  - internal/sdk/pkg/models/shared/triggerruncustominput.go
-  - internal/sdk/pkg/models/shared/triggerrunidgraphoutput.go
-  - internal/sdk/pkg/models/shared/triggerrunidgraphinput.go
-  - internal/sdk/pkg/models/shared/destinationupdate.go
-  - internal/sdk/pkg/models/shared/modelupdate.go
-  - internal/sdk/pkg/models/shared/sourceupdate.go
-  - internal/sdk/pkg/models/shared/syncupdate.go
-  - internal/sdk/pkg/models/shared/security.go
   - USAGE.md
   - internal/provider/provider.go
   - examples/provider/provider.tf

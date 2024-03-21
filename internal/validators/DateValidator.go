@@ -4,7 +4,7 @@ package validators
 
 import (
 	"context"
-	"github.com/de-tf-providers/terraform-provider-hightouch/v4/internal/sdk/pkg/types"
+	"github.com/de-tf-providers/terraform-provider-hightouch/v4/internal/sdk/types"
 	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
